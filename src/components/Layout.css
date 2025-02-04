@@ -1,0 +1,9 @@
+.bg-body-tertiary {
+    background-color: var(--color-secundario) !important;
+    /*color: white !important;*/
+    
+}
+
+.navbar-brand{
+    /*color: white !important;*/
+}

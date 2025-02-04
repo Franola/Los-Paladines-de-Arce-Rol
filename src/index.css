@@ -1,3 +1,20 @@
+:root {
+  
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  
+  --color-primario: #0B0A07;
+  --color-secundario: #008F39;
+  --color-terciario: #0353A4;
+  --color-cuaternario: #006DAA;
+  --color-quintenario: #B9D6F2;
+
+  background-color: var(--color-primario);
+  color: white !important;
+}
+
+
 body {
   margin: 0;
 }
