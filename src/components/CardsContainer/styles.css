@@ -1,0 +1,37 @@
+.itemListContainer{
+    height: 100%;
+    display: flex;
+    padding-top: 20px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.itemList{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2em;
+}
+
+.card{
+    --bs-card-border-color: #fff;
+}
+
+.card-body{
+    background-color: #3e3e3e;
+}
+
+.list-group{
+    --bs-list-group-bg: #3e3e3e;
+}
+
+.carta-icon{
+    width: 2rem;
+    height: 2rem;
+}
+
+.carta-info{
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 10px;
+}

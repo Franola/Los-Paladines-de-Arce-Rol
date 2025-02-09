@@ -12,6 +12,8 @@
 
   background-color: var(--color-primario);
   color: white !important;
+  --bs-body-bg: var(--color-primario);
+  --bs-body-color: white;
 }
 
 

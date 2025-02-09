@@ -6,4 +6,22 @@
 
 .navbar-brand{
     /*color: white !important;*/
+    font-size: 30px;
+    font-weight: 500;
 }
+
+.nav-link{
+    font-size: 20px;
+    font-weight: 500;
+}
+
+img{
+    width: 170px;
+    height: auto;
+}
+
+.cardd{
+    position: relative;
+    text-align: center;
+}
+
