@@ -14,7 +14,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Layout/>}>
             <Route index element={<CardContainer/>}/>
-            <Route path=':categoria' element={<CardContainer/>} />
+            <Route path=':categoriaParam' element={<CardContainer/>} />
             <Route path='*' element={<Error/>} />
           </Route>
         </Routes>

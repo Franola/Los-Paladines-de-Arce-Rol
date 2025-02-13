@@ -6,11 +6,17 @@
     align-items: center;
 }
 
+.unaCategoria{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2.5rem;
+}
+
 .itemList{
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    margin-top: 2em;
 }
 
 .card{
