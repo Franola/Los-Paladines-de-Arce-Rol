@@ -1,0 +1,13 @@
+.modal-content{
+    width: auto;
+    background-color: inherit;
+}
+
+.modal-dialog-centered{
+    justify-content: center;
+}
+
+.imagen-modal{
+    width: 100%;
+    height: 100%;
+}
