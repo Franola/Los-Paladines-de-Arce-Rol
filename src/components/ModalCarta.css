@@ -1,6 +1,7 @@
 .modal-content{
     width: auto;
     background-color: inherit;
+    border: inherit;
 }
 
 .modal-dialog-centered{

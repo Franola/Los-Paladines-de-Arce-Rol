@@ -12,7 +12,7 @@ function ModalCarta(props) {
             centered
         >
             {props.item ? (
-                <img className='imagen-modal' src={`/src/assets/cartas/${props.item.imagen}`} alt={props.item.clase.descripcion} />
+                <img className='imagen-modal' src={`/src/assets/cartas/${props.item.imagen}`} alt={props.item.clase} />
             ) : 
                 <></>
             }

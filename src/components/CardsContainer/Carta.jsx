@@ -4,7 +4,7 @@ function Carta({ item, onClick }) {
     
     return (
         <>
-            <img src={`/src/assets/cartas/${item.imagen}`} alt={item.clase.descripcion} onClick={onClick}/>
+            <img src={`/src/assets/cartas/${item.imagen}`} alt={item.clase} onClick={onClick}/>
         </>
     );
 } 

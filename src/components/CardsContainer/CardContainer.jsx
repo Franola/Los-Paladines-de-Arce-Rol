@@ -42,7 +42,7 @@ function CardContainer() {
             <>
                 {console.log(categorias)}
                 {categorias.map((cate) => {
-                    const itemsFiltrados = items.filter(item => item.categoria.descripcion == cate.descripcion);
+                    const itemsFiltrados = items.filter(item => item.categoria == cate.descripcion);
                     if(itemsFiltrados.length == 0) return null;
                     return (
                         <div className='unaCategoria' key={cate.id}>
@@ -59,7 +59,7 @@ function CardContainer() {
     }
 
     const vistaConCategoria = () => {
-        const itemsFiltrados = items.filter(item => item.categoria.descripcion == categoriaParam);
+        const itemsFiltrados = items.filter(item => item.categoria == categoriaParam);
         
         return (
             <>
