@@ -9,7 +9,6 @@ import React from 'react';
 function CardList({ items }) {
     const [mostrarItem, setMostrarItem] = useState();
     const [modalShow, setModalShow] = React.useState(false);
-    console.log(items)
 
     const click = (item) => {
         setMostrarItem(item);

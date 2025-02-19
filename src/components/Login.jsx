@@ -33,8 +33,9 @@ function Login() {
                 });
 
                 if (user) {
-                    console.log("Usuario encontrado: ", user.data());
-                    setUsuario(user.data());
+                    const userData = { id: user.id, ...user.data() };
+                    console.log("Usuario encontrado: ", userData);
+                    setUsuario(userData);
                     navigate('/');                    
                 } else {
                     setError('Usuario o contraseña incorrectos');

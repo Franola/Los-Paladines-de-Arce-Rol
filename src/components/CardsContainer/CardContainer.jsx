@@ -8,13 +8,17 @@ import {
     collection,
     where,
     query,
-  } from "firebase/firestore";
+} from "firebase/firestore";
+import { useContext } from "react";
+import { UsuarioContext } from '../context/usuarioContext';
+import { use } from 'react';
 
 function CardContainer() {
     const [items, setItems] = useState([]);
     const [categorias, setCategorias] = useState([]);
     const {categoriaParam} = useParams();
-    console.log(categoriaParam)
+    const { usuario } = useContext(UsuarioContext);
+    const [itemsUsuario, setItemsUsuario] = useState([]);
 
     useEffect(() => {
         const db = getFirestore();
@@ -24,30 +28,30 @@ function CardContainer() {
             .then((snapshot) => {
                 setItems(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
             })
-            .finally(() => console.log(items));
 
         let refCollectionCategorias = collection(db, "Categoria");
         getDocs(refCollectionCategorias)
             .then((snapshot) => {
                 setCategorias(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
             })
-            .finally(() => console.log(categorias));
     },[]);
+
+    useEffect(() => {
+        if(items.length > 0) {
+            setItemsUsuario(items.filter(item => item.usuarios.includes(usuario.id)));
+        }
+    },[items, usuario]);
 
 
 
     const vistaSinCategoria = () => {
-        console.log("sin categoria")
         return (
             <>
-                {console.log(categorias)}
                 {categorias.map((cate) => {
-                    const itemsFiltrados = items.filter(item => item.categoria == cate.descripcion);
+                    const itemsFiltrados = itemsUsuario.filter(item => item.categoria == cate.descripcion);
                     if(itemsFiltrados.length == 0) return null;
                     return (
                         <div className='unaCategoria' key={cate.id}>
-                            {console.log(cate)}
-
                             <h1>{cate.descripcion}s</h1>
 
                             <CardList items={itemsFiltrados}/>
@@ -59,7 +63,7 @@ function CardContainer() {
     }
 
     const vistaConCategoria = () => {
-        const itemsFiltrados = items.filter(item => item.categoria == categoriaParam);
+        const itemsFiltrados = itemsUsuario.filter(item => item.categoria == categoriaParam);
         
         return (
             <>

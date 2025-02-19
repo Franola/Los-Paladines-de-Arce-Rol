@@ -31,7 +31,6 @@ function Layout() {
         .then((snapshot) => {
           setCategorias(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
         })
-      .finally(() => console.log(categorias));
     }
   },[]);
 
