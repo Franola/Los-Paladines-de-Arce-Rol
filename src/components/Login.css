@@ -1,0 +1,33 @@
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    padding: 30px;
+    margin: auto;
+    border-radius: 7px;
+    background: var(--color-secundario);
+    color: var(--color-primario);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.login-form input {
+    background-color: #fff;
+    color: var(--color-primario);
+}
+
+.form-control:focus {
+    background-color: #fff;
+    color: var(--color-primario);
+}
+
+.titulo{
+    margin: auto;
+}
+
+.boton-login{
+    background-color: var(--color-terciario);
+    border-color: var(--color-terciario);
+}

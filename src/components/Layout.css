@@ -25,3 +25,19 @@ img{
     text-align: center;
 }
 
+.usuario{
+    position: absolute;
+    right: 10px;
+}
+
+.dropdown-menu[data-bs-popper]{
+    left: -90px;
+}
+
+.dropdown-menu{
+    --bs-dropdown-bg: #037731;
+    --bs-dropdown-color: var(--color-primario);
+    --bs-dropdown-link-color: var(--color-primario);
+    --bs-dropdown-link-hover-bg: #14b353;
+    --bs-dropdown-link-active-bg: #14b353;
+}

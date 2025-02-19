@@ -5,20 +5,26 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Layout from './components/Layout'
 import CardContainer from './components/CardsContainer/CardContainer'
+import Error from './components/Error'
+import Login from './components/Login'
+import { UsuarioProvider } from './components/context/usuarioContext';
 
 function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Layout/>}>
-            <Route index element={<CardContainer/>}/>
-            <Route path=':categoriaParam' element={<CardContainer/>} />
-            <Route path='*' element={<Error/>} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <UsuarioProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Layout/>}>
+              <Route index element={<CardContainer/>}/>
+              <Route path=':categoriaParam' element={<CardContainer/>} />
+              <Route path='*' element={<Error/>} />
+            </Route>
+            <Route path='login' element={<Login />} />
+          </Routes>
+        </BrowserRouter>
+      </UsuarioProvider>
     </>
   )
 }
