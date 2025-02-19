@@ -26,12 +26,12 @@ img{
 }
 
 .usuario{
-    position: absolute;
-    right: 10px;
+    /*position: absolute;
+    right: 10px;*/
 }
 
 .dropdown-menu[data-bs-popper]{
-    left: -90px;
+    /*left: -90px;*/
 }
 
 .dropdown-menu{

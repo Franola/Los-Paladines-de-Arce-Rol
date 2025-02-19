@@ -45,6 +45,8 @@ function Layout() {
                 {categorias.map((cate) => (
                   <Nav.Link as={Link} to={`/${cate.descripcion}`} key={cate.id}>{cate.descripcion}s</Nav.Link>
                 ))}
+              </Nav>
+              <Nav>
                 <NavDropdown title={`${(usuario == undefined ? "" : usuario.usuario)}`} id="basic-nav-dropdown" className='usuario'>
                   <NavDropdown.Item href="/Login">Cerrar sesión</NavDropdown.Item>
                 </NavDropdown>
