@@ -1,8 +1,8 @@
 import './Layout.css'
-import { Navbar,Container,Nav,NavDropdown } from 'react-bootstrap'
+import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import {
     getFirestore,
     getDocs,
@@ -32,7 +32,12 @@ function Layout() {
           setCategorias(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
         })
     }
-  },[]);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('usuario'); // Limpiar localStorage
+    navigate('/Login'); // Redirigir a la página de login
+  };
 
   return (
     <>
@@ -48,7 +53,7 @@ function Layout() {
               </Nav>
               <Nav>
                 <NavDropdown title={`${(usuario == undefined ? "" : usuario.usuario)}`} id="basic-nav-dropdown" className='usuario'>
-                  <NavDropdown.Item href="/Login">Cerrar sesión</NavDropdown.Item>
+                  <NavDropdown.Item onClick={handleLogout}>Cerrar sesión</NavDropdown.Item>
                 </NavDropdown>
               </Nav>
               </Navbar.Collapse>
