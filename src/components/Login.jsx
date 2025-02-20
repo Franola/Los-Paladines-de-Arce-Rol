@@ -61,10 +61,12 @@ function Login() {
                     <Form.Label>Contraseña</Form.Label>
                     <Form.Control type="password" placeholder="Ingrese la contraseña" />
                 </Form.Group>
-                <Button className='boton-login' variant="primary" type="submit">
-                    Aceptar
-                </Button>
-                {error && <p>{error}</p>}
+                <div className='d-flex justify-content-between align-items-center'>
+                    <Button className='boton-login' variant="primary" type="submit">
+                        Aceptar
+                    </Button>
+                    {error && <span className='text-danger'><b>{error}</b></span>}
+                </div>
             </Form>
         </div>
     );
