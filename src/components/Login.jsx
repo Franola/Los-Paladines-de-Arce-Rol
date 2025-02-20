@@ -36,6 +36,8 @@ function Login() {
                     const userData = { id: user.id, ...user.data() };
                     console.log("Usuario encontrado: ", userData);
                     setUsuario(userData);
+                    console.log('Guardando usuario en localStorage');
+                    localStorage.setItem('usuario', JSON.stringify(userData)); // Guardar en localStorage
                     navigate('/');                    
                 } else {
                     setError('Usuario o contraseña incorrectos');
