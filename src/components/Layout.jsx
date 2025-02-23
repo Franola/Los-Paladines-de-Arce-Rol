@@ -46,11 +46,24 @@ function Layout() {
               <Navbar.Brand as={Link} to={"/"}>LPA</Navbar.Brand>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="me-auto">
-                {categorias.map((cate) => (
-                  <Nav.Link as={Link} to={`/${cate.descripcion}`} key={cate.id}>{cate.descripcion}s</Nav.Link>
-                ))}
-              </Nav>
+                <Nav className="me-auto">
+                  {usuario && !usuario.admin && (
+                    categorias.map((cate) => (
+                      <Nav.Link as={Link} to={`/${cate.descripcion}`} key={cate.id}>{cate.descripcion}s</Nav.Link>
+                    ))
+                  )}
+                  {usuario && usuario.admin && (
+                    <>
+                      <NavDropdown title="Cartas" id="basic-nav-dropdown">
+                        <NavDropdown.Item as={Link} to={`/`}>Todas</NavDropdown.Item>
+                        {categorias.map((cate) => (
+                          <NavDropdown.Item as={Link} to={`/${cate.descripcion}`} key={cate.id}>{cate.descripcion}s</NavDropdown.Item>
+                        ))}
+                      </NavDropdown>
+                      <Nav.Link as={Link} to="/admin/crearUsuario">Crear usuario</Nav.Link>
+                    </>
+                  )}
+                </Nav>
               <Nav>
                 <NavDropdown title={`${(usuario == undefined ? "" : usuario.usuario)}`} id="basic-nav-dropdown" className='usuario'>
                   <NavDropdown.Item onClick={handleLogout}>Cerrar sesión</NavDropdown.Item>

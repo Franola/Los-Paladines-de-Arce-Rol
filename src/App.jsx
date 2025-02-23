@@ -5,6 +5,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Layout from './components/Layout'
 import CardContainer from './components/CardsContainer/CardContainer'
+import Usuario from './components/Usuario'
 import Error from './components/Error'
 import Login from './components/Login'
 import { UsuarioProvider } from './components/context/usuarioContext';
@@ -19,6 +20,7 @@ function App() {
             <Route path='/' element={<Layout/>}>
               <Route index element={<CardContainer/>}/>
               <Route path=':categoriaParam' element={<CardContainer/>} />
+              <Route path='admin/crearUsuario' element={<Usuario/>} />
               <Route path='*' element={<Error/>} />
             </Route>
             <Route path='login' element={<Login />} />

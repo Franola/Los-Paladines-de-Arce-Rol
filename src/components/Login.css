@@ -13,16 +13,6 @@
     transform: translate(-50%, -50%);
 }
 
-.login-form input {
-    background-color: #fff;
-    color: var(--color-primario);
-}
-
-.form-control:focus {
-    background-color: #fff;
-    color: var(--color-primario);
-}
-
 .titulo{
     margin: auto;
 }

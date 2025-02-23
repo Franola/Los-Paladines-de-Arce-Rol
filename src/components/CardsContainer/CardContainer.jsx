@@ -38,7 +38,11 @@ function CardContainer() {
 
     useEffect(() => {
         if(items.length > 0) {
-            setItemsUsuario(items.filter(item => item.usuarios.includes(usuario.id)));
+            if(!usuario.admin){
+                setItemsUsuario(items.filter(item => item.usuarios.includes(usuario.id)));
+            } else {
+                setItemsUsuario(items);
+            }
         }
     },[items, usuario]);
 

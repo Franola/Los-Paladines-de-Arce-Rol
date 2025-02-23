@@ -21,6 +21,15 @@ body {
   margin: 0;
 }
 
+.form-control {
+  background-color: #fff;
+  color: var(--color-primario);
+}
+
+.form-control:focus {
+  background-color: #fff;
+  color: var(--color-primario);
+}
 
 /*
 :root {
