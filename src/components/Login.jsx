@@ -19,6 +19,7 @@ function Login() {
     const { usuario, setUsuario } = useContext(UsuarioContext);
 
     const handleSubmit = (e) => {
+        setError('');
         e.preventDefault();
         const db = getFirestore();
         const refCollection = collection(db, "Usuarios");
