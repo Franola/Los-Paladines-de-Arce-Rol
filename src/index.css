@@ -26,6 +26,11 @@ body {
   color: var(--color-primario);
 }
 
+.form-select{
+  background-color: #fff;
+  color: var(--color-primario);
+}
+
 .form-control:focus {
   background-color: #fff;
   color: var(--color-primario);

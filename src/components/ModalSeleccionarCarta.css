@@ -1,0 +1,25 @@
+.modal-seleccionar-carta{
+
+
+}
+
+.imagen-modal-seleccionar-carta{
+    width: 200px;
+    height: auto;
+}
+
+.modal-seleccionar-carta-dialog{
+    max-width: inherit;
+    margin: 50px;
+}
+
+.modal-seleccionar-carta-content{
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.seleccionada{
+    border-radius: 5px;
+    background-color: var(--color-secundario);
+}

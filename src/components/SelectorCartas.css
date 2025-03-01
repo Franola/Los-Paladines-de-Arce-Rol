@@ -1,0 +1,16 @@
+.carta-sin-seleccion{
+    border: 5px dashed #fff;
+    border-radius: 5px;
+    width: 100px;
+    height: 144px;
+}
+
+.mas{
+    width: 60px;
+    height: 60px;
+}
+
+.carta-seleccionada{
+    width: 100px;
+    height: 144px;
+}
