@@ -20,7 +20,7 @@ function App() {
           <Routes>
             <Route path='/' element={<Layout/>}>
               <Route index element={<CardContainer/>}/>
-              <Route path=':categoriaParam' element={<CardContainer/>} />
+              <Route path='cartas/:categoriaParam' element={<CardContainer/>} />
               {/* ADMIN */}
               <Route path='admin/crearUsuario' element={<Usuario/>} />
               {/* <Route path='admin/editarUsuario/:id' element={<Usuario/>} />*/}

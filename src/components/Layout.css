@@ -41,3 +41,15 @@ img{
     --bs-dropdown-link-hover-bg: #14b353;
     --bs-dropdown-link-active-bg: #14b353;
 }
+
+.icon-notif{
+    height: 40px;
+    width: 40px;
+}
+
+.count-notif{
+    font-size: small;
+    position: absolute;
+    top: 35px;
+    left: 30px;
+}

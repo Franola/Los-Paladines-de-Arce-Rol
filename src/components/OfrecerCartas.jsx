@@ -57,7 +57,9 @@ function OfrecerCartas() {
         try{
             setDoc(doc(refCollection), {
                 usuario: usuario,
-                cartas: cartasSeleccionadas
+                cartas: cartasSeleccionadas,
+                vista: false,
+                fecha: firebase.firestore.Timestamp.now()
             });
 
             Swal.fire({

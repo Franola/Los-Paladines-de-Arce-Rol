@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 function Layout() {
   const [categorias, setCategorias] = useState([]);
   const { usuario, setUsuario } = useContext(UsuarioContext);
+  const [cantNotif, setCantNotif] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,6 +35,18 @@ function Layout() {
     }
   }, []);
 
+  useEffect(() => {
+    if (usuario) {
+      const db = getFirestore();
+      const refCollection = collection(db, "Notificaciones");
+      const q = query(refCollection, where("vista", "==", false), where("usuario", "==", usuario.id));
+      getDocs(q)
+        .then((snapshot) => {
+          setCantNotif(snapshot.docs.length);
+        })
+    }
+  }, [usuario]);
+
   const handleLogout = () => {
     localStorage.removeItem('usuario'); // Limpiar localStorage
     navigate('/Login'); // Redirigir a la página de login
@@ -49,7 +62,7 @@ function Layout() {
                 <Nav className="me-auto">
                   {usuario && !usuario.admin && (
                     categorias.map((cate) => (
-                      <Nav.Link as={Link} to={`/${cate.descripcion}`} key={cate.id}>{cate.descripcion}s</Nav.Link>
+                      <Nav.Link as={Link} to={`/cartas/${cate.descripcion}`} key={cate.id}>{cate.descripcion}s</Nav.Link>
                     ))
                   )}
                   {usuario && usuario.admin && (
@@ -57,7 +70,7 @@ function Layout() {
                       <NavDropdown title="Cartas" id="basic-nav-dropdown">
                         <NavDropdown.Item as={Link} to={`/`}>Todas</NavDropdown.Item>
                         {categorias.map((cate) => (
-                          <NavDropdown.Item as={Link} to={`/${cate.descripcion}`} key={cate.id}>{cate.descripcion}s</NavDropdown.Item>
+                          <NavDropdown.Item as={Link} to={`/cartas/${cate.descripcion}`} key={cate.id}>{cate.descripcion}s</NavDropdown.Item>
                         ))}
                       </NavDropdown>
                       <Nav.Link as={Link} to="/admin/crearUsuario">Crear usuario</Nav.Link>
@@ -68,7 +81,15 @@ function Layout() {
                   )}
                 </Nav>
               <Nav>
-                <NavDropdown title={`${(usuario == undefined ? "" : usuario.usuario)}`} id="basic-nav-dropdown" className='usuario'>
+              <Nav.Link as={Link} to="/notificaciones" className='position-relative'>
+                {cantNotif > 0 && (
+                    <span className="badge bg-danger rounded-circle count-notif">
+                      {cantNotif}
+                    </span>
+                  )}
+                <img src='/src/assets/icon-notificacion.png' className='icon-notif'/>
+              </Nav.Link>
+                <NavDropdown title={`${(usuario == undefined ? "" : usuario.usuario)}`} id="basic-nav-dropdown" className='usuario d-flex align-items-center'>
                   <NavDropdown.Item onClick={handleLogout}>Cerrar sesión</NavDropdown.Item>
                 </NavDropdown>
               </Nav>
