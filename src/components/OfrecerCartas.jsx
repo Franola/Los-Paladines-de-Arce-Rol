@@ -13,7 +13,8 @@ import {
     where,
     query,
     doc,
-    setDoc
+    setDoc,
+    Timestamp
 } from "firebase/firestore";
 import Swal from 'sweetalert2';
 
@@ -59,7 +60,8 @@ function OfrecerCartas() {
                 usuario: usuario,
                 cartas: cartasSeleccionadas,
                 vista: false,
-                fecha: firebase.firestore.Timestamp.now()
+                fecha: Timestamp.now(),
+                tipo: 'Selección de carta'
             });
 
             Swal.fire({

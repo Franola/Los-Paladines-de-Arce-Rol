@@ -8,13 +8,13 @@ import { useState } from 'react';
 function ModalSeleccionarCarta(props) {
     const [cartasFiltradas, setCartasFiltradas] = useState([]);
 
-    const handleClick = (id) => {
-        if(props.cartasSeleccionadas.includes(id)) {
+    const handleClick = (carta) => {
+        if(props.cartasSeleccionadas.some(carta => carta.id === carta)) {
             props.onHide();
             return;
         }
-        props.setCartasSeleccionadas([...props.cartasSeleccionadas, id]);
-        console.log(id);
+        props.setCartasSeleccionadas([...props.cartasSeleccionadas, carta]);
+        console.log(carta);
         props.onHide();
     }
 
@@ -54,12 +54,12 @@ function ModalSeleccionarCarta(props) {
             
             {cartasFiltradas.length > 0 ? (
                 cartasFiltradas.map((item) => (
-                    <img className={`imagen-modal-seleccionar-carta ${(props.cartasSeleccionadas.includes(item.id) ? "seleccionada" : "")}`} src={`/src/assets/cartas/${item.imagen}`} alt={item.clase} key={item.id} onClick={()=>handleClick(item.id)}/>
+                    <img className={`imagen-modal-seleccionar-carta ${(props.cartasSeleccionadas.some(carta => carta.id === item.id) ? "seleccionada" : "")}`} src={`/src/assets/cartas/${item.imagen}`} alt={item.clase} key={item.id} onClick={()=>handleClick(item)}/>
                 ))
             ) : 
                 props.cartas ? (
                     props.cartas.map((item) => (
-                        <img className={`imagen-modal-seleccionar-carta ${(props.cartasSeleccionadas.includes(item.id) ? "seleccionada" : "")}`} src={`/src/assets/cartas/${item.imagen}`} alt={item.clase} key={item.id} onClick={()=>handleClick(item.id)}/>
+                        <img className={`imagen-modal-seleccionar-carta ${(props.cartasSeleccionadas.some(carta => carta.id === item.id) ? "seleccionada" : "")}`} src={`/src/assets/cartas/${item.imagen}`} alt={item.clase} key={item.id} onClick={()=>handleClick(item)}/>
                     ))
                 ) : 
                     <></>
