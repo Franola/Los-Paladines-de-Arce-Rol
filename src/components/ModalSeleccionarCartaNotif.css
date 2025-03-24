@@ -1,0 +1,23 @@
+.imagen-modal-seleccionar-carta-notif{
+    width: 200px;
+    height: auto;
+}
+
+.modal-seleccionar-carta-notif-dialog{
+    max-width: inherit;
+    margin: 50px;
+}
+
+.modal-seleccionar-carta-notif-content{
+    flex-wrap: wrap;
+    justify-content: center;
+    width: auto;
+    border: inherit;
+    padding: 1rem;
+    background-color: var(--bs-modal-bg);
+}
+
+.seleccionada{
+    border-radius: 5px;
+    background-color: var(--color-secundario);
+}

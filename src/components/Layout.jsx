@@ -81,14 +81,16 @@ function Layout() {
                   )}
                 </Nav>
               <Nav>
-              <Nav.Link as={Link} to="/notificaciones" className='position-relative'>
-                {cantNotif > 0 && (
-                    <span className="badge bg-danger rounded-circle count-notif">
-                      {cantNotif}
-                    </span>
-                  )}
-                <img src='/src/assets/icon-notificacion.png' className='icon-notif'/>
-              </Nav.Link>
+                {usuario && !usuario.admin && (
+                  <Nav.Link as={Link} to="/notificaciones" className='position-relative'>
+                    {cantNotif > 0 && (
+                        <span className="badge bg-danger rounded-circle count-notif">
+                          {cantNotif}
+                        </span>
+                      )}
+                    <img src='/src/assets/icon-notificacion.png' className='icon-notif'/>
+                  </Nav.Link>
+                )}
                 <NavDropdown title={`${(usuario == undefined ? "" : usuario.usuario)}`} id="basic-nav-dropdown" className='usuario d-flex align-items-center'>
                   <NavDropdown.Item onClick={handleLogout}>Cerrar sesión</NavDropdown.Item>
                 </NavDropdown>

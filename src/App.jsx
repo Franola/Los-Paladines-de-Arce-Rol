@@ -5,6 +5,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Layout from './components/Layout'
 import CardContainer from './components/CardsContainer/CardContainer'
+import Notificaciones from './components/Notificaciones'
 import Usuario from './components/Usuario'
 import OfrecerCartas from './components/OfrecerCartas'
 import Error from './components/Error'
@@ -21,6 +22,7 @@ function App() {
             <Route path='/' element={<Layout/>}>
               <Route index element={<CardContainer/>}/>
               <Route path='cartas/:categoriaParam' element={<CardContainer/>} />
+              <Route path='notificaciones' element={<Notificaciones/>} />
               {/* ADMIN */}
               <Route path='admin/crearUsuario' element={<Usuario/>} />
               {/* <Route path='admin/editarUsuario/:id' element={<Usuario/>} />*/}

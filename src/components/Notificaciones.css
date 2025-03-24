@@ -1,0 +1,28 @@
+.notificaciones{
+    
+}
+
+.notificacion{
+    padding: .5rem;
+    border: 1px solid;
+    border-color: gray;
+    max-width: 800px;
+    width: 100%;
+}
+
+.sin-ver:hover{
+    background-color: #1a1a1a;
+}
+
+.vista{
+    opacity: 0.5;
+}
+
+.cartas-notificacion{
+    margin-bottom: 1rem;
+}
+
+.carta-notificacion{
+    width: 100px;
+    height: 144px;
+}
