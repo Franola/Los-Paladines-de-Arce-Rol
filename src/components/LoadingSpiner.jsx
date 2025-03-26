@@ -1,17 +1,17 @@
 import { Oval } from 'react-loader-spinner';
 
-function LoadingSpiner(){
+function LoadingSpiner({ height = 200, width = 100, showLabel = true, label = 'Cargando...', paddingBottom = 30 }) {
     return (
-        <div style={{ paddingBottom: "30px" }}>
+        <div style={{ paddingBottom: paddingBottom }}>
             <div className='d-flex justify-content-center '>
                 <Oval
-                    height="200"
-                    width="100"
+                    height={height}
+                    width={width}
                     color='#3380FF'
                     ariaLabel="Guardando..."
                 />
             </div>
-            <h6 className='d-flex justify-content-center'>Cargando...</h6>
+            {showLabel && <h6 className='d-flex justify-content-center'>{label}</h6>}
         </div>
     );
 }
