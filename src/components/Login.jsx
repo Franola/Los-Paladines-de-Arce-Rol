@@ -12,13 +12,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from "react";
 import { UsuarioContext } from './context/usuarioContext';
+import LoadingSpiner from './LoadingSpiner';
 
 function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { usuario, setUsuario } = useContext(UsuarioContext);
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = (e) => {
+        setLoading(true);
         setError('');
         e.preventDefault();
         const db = getFirestore();
@@ -44,6 +47,9 @@ function Login() {
                     setError('Usuario o contraseña incorrectos');
                 }
             })
+            .finally(() => {
+                setLoading(false);
+            })
             .catch((error) => {
                 console.error("Error al obtener los documentos: ", error);
                 setError('Error al iniciar sesión');
@@ -63,9 +69,10 @@ function Login() {
                     <Form.Control type="password" placeholder="Ingrese la contraseña" />
                 </Form.Group>
                 <div className='d-flex justify-content-between align-items-center'>
-                    <Button className='boton-login' variant="primary" type="submit">
+                    <Button className='boton-login' variant="primary" type="submit" disabled={loading}>
                         Aceptar
                     </Button>
+                    {loading && <LoadingSpiner height={40} width={40} showLabel={false} paddingBottom={0}/>}
                     {error && <span className='text-danger'><b>{error}</b></span>}
                 </div>
             </Form>
