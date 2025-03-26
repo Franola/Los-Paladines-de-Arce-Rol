@@ -12,6 +12,7 @@ import {
 import { useContext } from "react";
 import { UsuarioContext } from '../context/usuarioContext';
 import { use } from 'react';
+import LoadingSpiner from '../LoadingSpiner';
 
 function CardContainer() {
     const [items, setItems] = useState([]);
@@ -19,8 +20,10 @@ function CardContainer() {
     const {categoriaParam} = useParams();
     const { usuario } = useContext(UsuarioContext);
     const [itemsUsuario, setItemsUsuario] = useState([]);
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
+        setLoading(true);
         const db = getFirestore();
 
         let refCollection = collection(db, "Cartas");
@@ -34,6 +37,10 @@ function CardContainer() {
             .then((snapshot) => {
                 setCategorias(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
             })
+            .finally(() => {
+                setLoading(false);
+            })
+            
     },[]);
 
     useEffect(() => {
@@ -79,7 +86,9 @@ function CardContainer() {
 
     return (
         <div className="itemListContainer">
-            {categoriaParam == undefined ? vistaSinCategoria() : vistaConCategoria()}
+            {loading ? <LoadingSpiner /> :
+                categoriaParam == undefined ? vistaSinCategoria() : vistaConCategoria()
+            }
         </div>
     )
 }
