@@ -14,13 +14,16 @@ import {
     setDoc
 } from "firebase/firestore";
 import Swal from 'sweetalert2';
+import LoadingSpiner from './LoadingSpiner';
 
 function Usuario() {
     const [error, setError] = useState('');
     const [sent, setSent] = useState(false);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
+        setLoading(true);
         e.preventDefault();
         setSent(true);
         const form = e.target;
@@ -30,6 +33,8 @@ function Usuario() {
         const admin = form.formBasicCheckbox.checked;
 
         if (password !== confirmPassword) {
+            setLoading(false);
+            setSent(false);
             setError('Las contraseñas no coinciden');
             return;
         }
@@ -40,7 +45,9 @@ function Usuario() {
         await getDocs(q)
             .then((snapshot) => {
                 if (snapshot.size > 0) {
+                    setLoading(false);
                     setError('El usuario ya existe');
+                    setSent(false);
                 } else {
                     setError('');
                     
@@ -51,6 +58,8 @@ function Usuario() {
                             admin: admin
                         });
 
+                        setLoading(false);
+
                         Swal.fire({
                             title: 'Usuario registrado',
                             icon: 'success',
@@ -60,6 +69,7 @@ function Usuario() {
                             navigate('/');
                         }); 
                     } catch (e) {
+                        setLoading(false);
                         console.error('Error al registrar el usuario', e);
                         Swal.fire({
                             title: 'Error',
@@ -73,7 +83,10 @@ function Usuario() {
                         setSent(false);
                     }                   
                 }
-            });
+            })
+            .finally(() => {
+                setLoading(false);
+            })
     }
 
     return (
@@ -103,6 +116,7 @@ function Usuario() {
                 <Button className="m-auto" variant="primary" type="submit" disabled={sent}>
                     Registrar
                 </Button>
+                {loading && <LoadingSpiner/>}
             </Form>
         </Container>
     );
