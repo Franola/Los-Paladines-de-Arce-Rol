@@ -16,6 +16,7 @@ import {
 import { useContext } from 'react';
 import { UsuarioContext } from './context/usuarioContext';
 import ModalSeleccionarCartaNotif from './ModalSeleccionarCartaNotif';
+import LoadingSpiner from './LoadingSpiner';
 
 function Notificaciones() {
     const [notificaciones, setNotificaciones] = useState([]);
@@ -23,16 +24,21 @@ function Notificaciones() {
     const [modalShow, setModalShow] = useState(false);
     const [cartasModal, setCartasModal] = useState([]);
     const [notificacionModal, setNotificacionModal] = useState();
+    const [loading, setLoading] = useState(true);
     
     const db = getFirestore();
     const refCollectionNotif = collection(db, "Notificaciones");
 
     useEffect(() => {
+        setLoading(true);
         if (usuario) {
             const q = query(refCollectionNotif, where("usuario", "==", usuario.id), orderBy("fecha", "desc"));
             getDocs(q)
                 .then((snapshot) => {
                     setNotificaciones(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+                })
+                .finally(() => {
+                    setLoading(false);
                 })
         }
     }, [usuario]);
@@ -85,6 +91,7 @@ function Notificaciones() {
 
     return (
         <div className="notificaciones d-flex flex-column align-items-center">
+            {loading && <LoadingSpiner/>}
             {notificaciones && (
                 notificaciones.map((notif) => (
                     (notif.tipo === 'Selección de carta') ? mostrarSeleccionCarta(notif) : mostrarNotificacion(notif)
