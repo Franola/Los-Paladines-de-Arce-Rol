@@ -13,12 +13,14 @@ import {
 import { useContext } from 'react';
 import { UsuarioContext } from './context/usuarioContext';
 import { useNavigate } from 'react-router-dom';
+import { use } from 'react';
 
 function Layout() {
   const [categorias, setCategorias] = useState([]);
   const { usuario, setUsuario } = useContext(UsuarioContext);
   const [cantNotif, setCantNotif] = useState(0);
   const navigate = useNavigate();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     if (!usuario) {
@@ -33,6 +35,15 @@ function Layout() {
           setCategorias(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
         })
     }
+
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -57,7 +68,19 @@ function Layout() {
       <Navbar expand="lg" className="bg-body-tertiary">
           <Container>
               <Navbar.Brand as={Link} to={"/"}>LPA</Navbar.Brand>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
+              <div className='d-flex align-items-center'>
+                {usuario && !usuario.admin && windowWidth < 992 && (
+                  <Nav.Link as={Link} to="/notificaciones" className='position-relative me-2'>
+                    {cantNotif > 0 && (
+                        <span className="badge bg-danger rounded-circle count-notif">
+                          {cantNotif}
+                        </span>
+                      )}
+                    <img src='/src/assets/icon-notificacion.png' className='icon-notif'/>
+                  </Nav.Link>
+                )}
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+              </div>
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
                   {usuario && !usuario.admin && (
@@ -82,7 +105,7 @@ function Layout() {
                   )}
                 </Nav>
               <Nav>
-                {usuario && !usuario.admin && (
+                {usuario && !usuario.admin && windowWidth > 991 && (
                   <Nav.Link as={Link} to="/notificaciones" className='position-relative'>
                     {cantNotif > 0 && (
                         <span className="badge bg-danger rounded-circle count-notif">
