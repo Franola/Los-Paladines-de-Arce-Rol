@@ -11,6 +11,7 @@ import OfrecerCartas from './components/OfrecerCartas'
 import Error from './components/Error'
 import Login from './components/Login'
 import { UsuarioProvider } from './components/context/usuarioContext';
+import AdminNotificaciones from './components/AdminNotificaciones';
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
               <Route path='admin/crearUsuario' element={<Usuario/>} />
               {/* <Route path='admin/editarUsuario/:id' element={<Usuario/>} />*/}
               <Route path='admin/ofrecerCartas' element={<OfrecerCartas/>} />
+              <Route path='admin/notificaciones' element={<AdminNotificaciones/>} />
               <Route path='*' element={<Error/>} />
             </Route>
             <Route path='login' element={<Login />} />

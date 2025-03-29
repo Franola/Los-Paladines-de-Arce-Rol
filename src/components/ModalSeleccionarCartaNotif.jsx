@@ -27,12 +27,15 @@ function ModalSeleccionarCartaNotif(props) {
     const refCollectionCartas = collection(db, "Cartas");
     
     const handleClick = (carta) => {
-        setCartaSeleccionada(carta);
+        if(!props.admin){
+            setCartaSeleccionada(carta);
+        }
     }
 
     const handleCancelar = () => {
         props.onHide();
         setCartaSeleccionada();
+        console.log(props.admin);
     }
 
     const handleAceptar = () => {
@@ -101,9 +104,22 @@ function ModalSeleccionarCartaNotif(props) {
                     <img className={`imagen-modal-seleccionar-carta ${(cartaSeleccionada && item.id === cartaSeleccionada.id ? "seleccionada" : "")}`} src={`/src/assets/cartas/${item.imagen}`} alt={item.clase} key={item.id} onClick={()=>handleClick(item)}/>
                 ))}
             </div>
+
             <div className='mx-auto d-flex justify-content-center'>
-                <button className='btn btn-danger mx-2' onClick={handleCancelar}>Cancelar</button>
-                <button className='btn btn-success mx-2' onClick={handleAceptar}>Aceptar</button>
+                {!props.admin ? 
+                    (
+                        <>
+                            <button className='btn btn-danger mx-2' onClick={handleCancelar}>Cancelar</button>
+                            <button className='btn btn-success mx-2' onClick={handleAceptar}>Aceptar</button>
+                        </>
+                    )
+                    :
+                    (
+                        <>
+                            <button className='btn btn-danger mx-2' onClick={handleCancelar}>Cerrar</button>
+                        </>
+                    )
+                }
             </div>
         </Modal>
     );
