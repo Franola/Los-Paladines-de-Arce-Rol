@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import Swal from 'sweetalert2';
 import LoadingSpiner from './LoadingSpiner';
+import { registerUsuario } from '../services/UsuarioService.js';
 
 function Usuario() {
     const [error, setError] = useState('');
@@ -30,7 +31,7 @@ function Usuario() {
         const usuario = form.formUser.value;
         const password = form.formBasicPassword.value;
         const confirmPassword = form.formBasicConfirmPassword.value;
-        const admin = form.formBasicCheckbox.checked;
+        const rol = form.formBasicCheckbox.checked ? "admin" : "user";
 
         if (password !== confirmPassword) {
             setLoading(false);
@@ -39,54 +40,32 @@ function Usuario() {
             return;
         }
 
-        const db = getFirestore();
-        const refCollection = collection(db, "Usuarios");
-        const q = query(refCollection, where("usuario", "==", usuario));
-        await getDocs(q)
-            .then((snapshot) => {
-                if (snapshot.size > 0) {
-                    setLoading(false);
-                    setError('El usuario ya existe');
-                    setSent(false);
-                } else {
-                    setError('');
-                    
-                    try{
-                        setDoc(doc(refCollection), {
-                            usuario: usuario,
-                            contra: password,
-                            admin: admin
-                        });
-
-                        setLoading(false);
-
-                        Swal.fire({
-                            title: 'Usuario registrado',
-                            icon: 'success',
-                            confirmButtonText: 'Ok',
-                            theme: 'dark',
-                        }).then(() => {
-                            navigate('/');
-                        }); 
-                    } catch (e) {
-                        setLoading(false);
-                        console.error('Error al registrar el usuario', e);
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Error al registrar el usuario',
-                            icon: 'error',
-                            confirmButtonText: 'Ok',
-                            theme: 'dark',
-                        });
-                        return;
-                    } finally {
-                        setSent(false);
-                    }                   
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            })
+        try{
+            const response = await registerUsuario({ usuario, password, rol });
+            console.log('Usuario registrado con éxito', response);
+            Swal.fire({
+                title: 'Usuario registrado',
+                icon: 'success',
+                confirmButtonText: 'Ok',
+                theme: 'dark',
+            }).then(() => {
+                navigate('/');
+            });
+        }
+        catch (e) {
+            setLoading(false);
+            console.error('Error al registrar el usuario', e);
+            Swal.fire({
+                title: 'Error',
+                text: 'Error al registrar el usuario',
+                icon: 'error',
+                confirmButtonText: 'Ok',
+                theme: 'dark',
+            });
+            return;
+        } finally {
+            setSent(false);
+        }
     }
 
     return (
