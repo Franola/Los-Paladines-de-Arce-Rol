@@ -13,6 +13,7 @@ import Login from './components/Login'
 import { UsuarioProvider } from './components/context/usuarioContext';
 import AdminNotificaciones from './components/AdminNotificaciones';
 import Clase from './forms/Clase/Clase.jsx';
+import Rama from './forms/Rama/Rama.jsx';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
               <Route path='cartas/:categoriaParam' element={<CardContainer/>} />
               <Route path='notificaciones' element={<Notificaciones/>} />
               <Route path='/clases' element={<Clase/>} />
+              <Route path='/ramas' element={<Rama/>} />
               {/* ADMIN */}
               <Route path='admin/crearUsuario' element={<Usuario/>} />
               {/* <Route path='admin/editarUsuario/:id' element={<Usuario/>} />*/}

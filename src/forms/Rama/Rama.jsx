@@ -1,10 +1,10 @@
-import './Clase.css';
+import './Rama.css';
 import  Container from "react-bootstrap/Container"
 import { useMemo } from 'react';
-import { getClases, getClaseById, createClase, updateClase, deleteClase } from '../../services/ClaseService.js';
+import { getRamas, getRamaById, createRama, updateRama, deleteRama } from '../../services/RamaService.js';
 import TablaCRUD from '../../components/TablaCRUD.jsx';
 
-function Clase() {
+function Rama() {
     const columns = useMemo(
         () => [
             {
@@ -25,10 +25,17 @@ function Clase() {
 
     return (
         <Container className="pb-2 mt-4 mb-2">
-            <h1>Clases</h1>
-            <TablaCRUD name="Clase" columns={columns} get={getClases} create={createClase} update={updateClase} remove={deleteClase} />
+            <h1>Ramas</h1>
+            <TablaCRUD
+                name="Rama"
+                columns={columns}
+                get={getRamas}
+                create={createRama}
+                update={updateRama}
+                remove={deleteRama}
+            />
         </Container>
     );
 };
 
-export default Clase
+export default Rama
