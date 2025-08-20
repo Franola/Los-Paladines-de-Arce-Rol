@@ -12,6 +12,7 @@ import Error from './components/Error'
 import Login from './components/Login'
 import { UsuarioProvider } from './components/context/usuarioContext';
 import AdminNotificaciones from './components/AdminNotificaciones';
+import Clase from './forms/Clase/Clase.jsx';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
               <Route index element={<CardContainer/>}/>
               <Route path='cartas/:categoriaParam' element={<CardContainer/>} />
               <Route path='notificaciones' element={<Notificaciones/>} />
+              <Route path='/clases' element={<Clase/>} />
               {/* ADMIN */}
               <Route path='admin/crearUsuario' element={<Usuario/>} />
               {/* <Route path='admin/editarUsuario/:id' element={<Usuario/>} />*/}
