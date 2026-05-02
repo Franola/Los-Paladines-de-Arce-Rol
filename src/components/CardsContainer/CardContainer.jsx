@@ -1,71 +1,76 @@
 import './styles.css'
 import CardList from './CardList'
-import { useEffect,useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from 'react-router-dom';
-import {
-    getFirestore,
-    getDocs,
-    collection,
-    where,
-    query,
-} from "firebase/firestore";
-import { useContext } from "react";
 import { UsuarioContext } from '../context/usuarioContext';
-import { use } from 'react';
 import LoadingSpiner from '../LoadingSpiner';
+import { TIPOS_CARTAS } from '../../utils/constants.js';
+import { getHechizos } from '../../services/HechizoService.js';
+// import { getArmas } from '../../services/ArmaService.js';
+// import { getArmaduras } from '../../services/ArmaduraService.js';
+// import { getComidas } from '../../services/ComidaService.js';
+// import { getObjetos } from '../../services/ObjetoService.js';
+// import { getPasivas } from '../../services/PasivaService.js';
+import useAsync from '../../hooks/useAsync.js';
 
 function CardContainer() {
-    const [items, setItems] = useState([]);
-    const [categorias, setCategorias] = useState([]);
-    const {categoriaParam} = useParams();
-    const { usuario } = useContext(UsuarioContext);
-    const [itemsUsuario, setItemsUsuario] = useState([]);
-    const [loading, setLoading] = useState(false)
+    const { data: hechizos, loading: loadingHechizos, fetchData: fetchHechizos } = useAsync(getHechizos);
+    // const { data: armas, loading: loadingArmas, fetchData: fetchArmas } = useAsync(getArmas);
+    // const { data: armaduras, loading: loadingArmaduras, fetchData: fetchArmaduras } = useAsync(getArmaduras);
+    // const { data: comidas, loading: loadingComidas, fetchData: fetchComidas } = useAsync(getComidas);
+    // const { data: objetos, loading: loadingObjetos, fetchData: fetchObjetos } = useAsync(getObjetos);
+    // const { data: pasivas, loading: loadingPasivas, fetchData: fetchPasivas } = useAsync(getPasivas);
+
+    const [categorias] = useState(TIPOS_CARTAS);
+    const { categoriaParam } = useParams();
+    const { usuario, loading: loadingUsuario } = useContext(UsuarioContext);
 
     useEffect(() => {
-        setLoading(true);
-        const db = getFirestore();
-
-        let refCollection = collection(db, "Cartas");
-        getDocs(refCollection)
-            .then((snapshot) => {
-                setItems(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-            })
-
-        let refCollectionCategorias = collection(db, "Categoria");
-        getDocs(refCollectionCategorias)
-            .then((snapshot) => {
-                setCategorias(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-            })
-            .finally(() => {
-                setLoading(false);
-            })
-            
-    },[]);
-
-    useEffect(() => {
-        if(items.length > 0) {
-            if(!usuario.admin){
-                setItemsUsuario(items.filter(item => item.usuarios.includes(usuario.id)));
+        if (!loadingUsuario && usuario) {
+            if (!categoriaParam) {
+                fetchHechizos();
+                // fetchArmas();
+                // fetchArmaduras();
+                // fetchComidas();
+                // fetchObjetos();
+                // fetchPasivas();
             } else {
-                setItemsUsuario(items);
+                switch (categoriaParam) {
+                    case "Hechizo": fetchHechizos(); break;
+                    // case "Pasiva": fetchPasivas(); break;
+                    // case "Arma": fetchArmas(); break;
+                    // case "Armadura": fetchArmaduras(); break;
+                    // case "Comida": fetchComidas(); break;
+                    // case "Objeto": fetchObjetos(); break;
+                    default: break;
+                }
             }
         }
-    },[items, usuario]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [loadingUsuario, usuario, categoriaParam]);
 
-
+    const obtenerItemsPorCategoria = (categoria) => {
+        switch (categoria) {
+            case "Hechizo": return hechizos || [];
+            // case "Pasiva": return pasivas || [];
+            // case "Arma": return armas || [];
+            // case "Armadura": return armaduras || [];
+            // case "Comida": return comidas || [];
+            // case "Objeto": return objetos || [];
+            default: return [];
+        }
+    }
 
     const vistaSinCategoria = () => {
         return (
             <>
                 {categorias.map((cate) => {
-                    const itemsFiltrados = itemsUsuario.filter(item => item.categoria == cate.descripcion);
-                    if(itemsFiltrados.length == 0) return null;
+                    const itemsFiltrados = obtenerItemsPorCategoria(cate);
+                    if (itemsFiltrados.length === 0) return null;
                     return (
-                        <div className='unaCategoria' key={cate.id}>
-                            <h1>{cate.descripcion}s</h1>
-
-                            <CardList items={itemsFiltrados}/>
+                        <div className='unaCategoria' key={cate}>
+                            <h1>{cate}s</h1>
+                            <CardList items={itemsFiltrados} />
                         </div>
                     );
                 })}           
@@ -74,20 +79,20 @@ function CardContainer() {
     }
 
     const vistaConCategoria = () => {
-        const itemsFiltrados = itemsUsuario.filter(item => item.categoria == categoriaParam);
-        
+        const itemsFiltrados = obtenerItemsPorCategoria(categoriaParam);
         return (
-            <>
-                <h1>{categoriaParam}</h1>
-                <CardList items={itemsFiltrados}/>
-            </>
+            <div className='unaCategoria'>
+                <h1>{categoriaParam}s</h1>
+                <CardList items={itemsFiltrados} />
+            </div>
         );
     }
 
     return (
         <div className="itemListContainer">
-            {loading ? <LoadingSpiner /> :
-                categoriaParam == undefined ? vistaSinCategoria() : vistaConCategoria()
+            {loadingHechizos // || loadingArmas || loadingArmaduras || loadingComidas || loadingObjetos || loadingPasivas
+                ? <LoadingSpiner /> 
+                : !categoriaParam ? vistaSinCategoria() : vistaConCategoria()
             }
         </div>
     )
