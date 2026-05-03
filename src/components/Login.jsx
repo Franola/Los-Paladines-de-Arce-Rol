@@ -8,11 +8,13 @@ import {
     where,
     query,
 } from "firebase/firestore";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from "react";
 import { UsuarioContext } from './context/usuarioContext';
 import LoadingSpiner from './LoadingSpiner';
+import { loginUsuario } from '../services/UsuarioService.js';
+import ErrorPopUp from './Popups/Error.jsx';
 
 function Login() {
     const [error, setError] = useState('');
@@ -20,40 +22,33 @@ function Login() {
     const { usuario, setUsuario } = useContext(UsuarioContext);
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        if (usuario) {
+            navigate('/');
+        }
+    }, [usuario, navigate]);
+
+    const handleSubmit = async (e) => {
         setLoading(true);
         setError('');
         e.preventDefault();
-        const db = getFirestore();
-        const refCollection = collection(db, "Usuarios");
         const username = e.target.elements.formGroupUsername.value.trim();
         const password = e.target.elements.formGroupPassword.value.trim();
 
-        getDocs(refCollection)
-            .then((snapshot) => {
-                const user = snapshot.docs.find((doc) => {
-                    const data = doc.data();
-                    return data.usuario === username && data.contra === password;
-                });
-
-                if (user) {
-                    const userData = { id: user.id, ...user.data() };
-                    console.log("Usuario encontrado: ", userData);
-                    setUsuario(userData);
-                    console.log('Guardando usuario en localStorage');
-                    localStorage.setItem('usuario', JSON.stringify(userData)); // Guardar en localStorage
-                    navigate('/');                    
-                } else {
-                    setError('Usuario o contraseña incorrectos');
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Error al obtener los documentos: ", error);
-                setError('Error al iniciar sesión');
-            });
+        try{
+            const user = await loginUsuario({ usuario: username, password: password });
+            console.log("Usuario logueado: ", user);
+            setUsuario(user.usuarioLogueado);
+            
+            navigate('/');
+        }
+        catch(error){
+            console.error("Error al iniciar sesión: ", error);
+            ErrorPopUp(error.response.data.error || "Error al iniciar sesión");
+        }
+        finally{
+            setLoading(false);
+        }
     };
     
     return (

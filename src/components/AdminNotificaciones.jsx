@@ -20,7 +20,7 @@ import { Container } from 'react-bootstrap';
 import ModalSeleccionarCartaNotif from './ModalSeleccionarCartaNotif';
 
 function AdminNotificaciones(){
-    const { usuario } = useContext(UsuarioContext);
+    const { usuario, loading: loadingUsuario } = useContext(UsuarioContext);
     const [loading, setLoading] = useState(true);
     const [notificaciones, setNotificaciones] = useState([]);
     const [usuarios, setUsuarios] = useState([]);
@@ -34,7 +34,7 @@ function AdminNotificaciones(){
 
     useEffect(() => {
         setLoading(true);
-        if (usuario) {
+        if (!loadingUsuario && usuario) {
             try{
                 getDocs(refCollectionNotif)
                     .then((snapshot) => {
@@ -52,7 +52,7 @@ function AdminNotificaciones(){
                 console.log("Error al obtener notificaciones:", error);
             }
         }
-    }, []);
+    }, [loadingUsuario, usuario]);
 
     const hideModal = () => {
         setModalShow(false);
@@ -124,20 +124,21 @@ function AdminNotificaciones(){
 
     return(
         <div className="notificaciones d-flex flex-column align-items-center">
-            {loading && <LoadingSpiner/>}
+            {(loading || loadingUsuario) && <LoadingSpiner/>}
             {notificaciones && (
                 notificaciones.map((notif) => (
                     (notif.tipo === 'Selección de carta') ? mostrarSeleccionCarta(notif) : mostrarNotificacion(notif)
                 ))
             )}
-
-            <ModalSeleccionarCartaNotif
-                show={modalShow}
-                onHide={hideModal}
-                cartas={cartasModal}
-                notificacion={notificacionModal}
-                admin={usuario.admin}
-            />
+            {!loading && !loadingUsuario &&
+                <ModalSeleccionarCartaNotif
+                    show={modalShow}
+                    onHide={hideModal}
+                    cartas={cartasModal}
+                    notificacion={notificacionModal}
+                    admin={usuario.rol === "admin"}
+                />
+            }   
         </div>
     );
 }
