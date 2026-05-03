@@ -14,6 +14,12 @@ import { UsuarioProvider } from './components/context/usuarioContext';
 import AdminNotificaciones from './components/AdminNotificaciones';
 import Clase from './forms/Clase/Clase.jsx';
 import Rama from './forms/Rama/Rama.jsx';
+import Hechizo from './forms/Hechizo/Hechizo.jsx';
+import Arma from './forms/Arma/Arma.jsx';
+import Armadura from './forms/Armadura/Armadura.jsx';
+import Pasiva from './forms/Pasiva/Pasiva.jsx';
+import Comida from './forms/Comida/Comida.jsx';
+import Objeto from './forms/Objeto/Objeto.jsx';
 
 function App() {
 
@@ -33,6 +39,12 @@ function App() {
               {/* <Route path='admin/editarUsuario/:id' element={<Usuario/>} />*/}
               <Route path='admin/ofrecerCartas' element={<OfrecerCartas/>} />
               <Route path='admin/notificaciones' element={<AdminNotificaciones/>} />
+              <Route path='admin/hechizos' element={<Hechizo/>} />
+              <Route path='admin/armas' element={<Arma/>} />
+              <Route path='admin/armaduras' element={<Armadura/>} />
+              <Route path='admin/pasivas' element={<Pasiva/>} />
+              <Route path='admin/comidas' element={<Comida/>} />
+              <Route path='admin/objetos' element={<Objeto/>} />
               <Route path='*' element={<Error/>} />
             </Route>
             <Route path='login' element={<Login />} />

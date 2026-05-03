@@ -1,16 +1,16 @@
 import './styles.css'
 import CardList from './CardList'
 import { useEffect, useState, useContext } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { UsuarioContext } from '../context/usuarioContext';
 import LoadingSpiner from '../LoadingSpiner';
 import { TIPOS_CARTAS } from '../../utils/constants.js';
 import { getHechizos } from '../../services/HechizoService.js';
-// import { getArmas } from '../../services/ArmaService.js';
-// import { getArmaduras } from '../../services/ArmaduraService.js';
-// import { getComidas } from '../../services/ComidaService.js';
-// import { getObjetos } from '../../services/ObjetoService.js';
-// import { getPasivas } from '../../services/PasivaService.js';
+import { getArmas } from '../../services/ArmaService.js';
+import { getArmaduras } from '../../services/ArmaduraService.js';
+import { getComidas } from '../../services/ComidaService.js';
+import { getObjetos } from '../../services/ObjetoService.js';
+import { getPasivas } from '../../services/PasivaService.js';
 import useAsync from '../../hooks/useAsync.js';
 
 function CardContainer() {
@@ -66,10 +66,15 @@ function CardContainer() {
             <>
                 {categorias.map((cate) => {
                     const itemsFiltrados = obtenerItemsPorCategoria(cate);
-                    if (itemsFiltrados.length === 0) return null;
+                    if (itemsFiltrados.length === 0 && (!usuario || usuario.rol !== "admin")) return null;
                     return (
                         <div className='unaCategoria' key={cate}>
-                            <h1>{cate}s</h1>
+                            <div className="d-flex align-items-center mb-3">
+                                <h1 className="mb-0">{cate}s</h1>
+                                {usuario && usuario.rol === "admin" && (
+                                    <Link to={`/admin/${cate.toLowerCase()}s`} className="btn btn-primary ms-3">Gestionar</Link>
+                                )}
+                            </div>
                             <CardList items={itemsFiltrados} />
                         </div>
                     );
@@ -82,7 +87,12 @@ function CardContainer() {
         const itemsFiltrados = obtenerItemsPorCategoria(categoriaParam);
         return (
             <div className='unaCategoria'>
-                <h1>{categoriaParam}s</h1>
+                <div className="d-flex align-items-center mb-3">
+                    <h1 className="mb-0">{categoriaParam}s</h1>
+                    {usuario && usuario.rol === "admin" && (
+                        <Link to={`/admin/${categoriaParam.toLowerCase()}s`} className="btn btn-primary ms-3">Gestionar</Link>
+                    )}
+                </div>
                 <CardList items={itemsFiltrados} />
             </div>
         );

@@ -14,26 +14,23 @@ import { useContext } from 'react';
 import { UsuarioContext } from './context/usuarioContext';
 import { useNavigate } from 'react-router-dom';
 import { use } from 'react';
+import useAsync from '../hooks/useAsync';
+import { getNotificacionByUser } from '../services/NotificacionService.js';
+import { logoutUsuario } from '../services/UsuarioService.js';
+import ErrorPopUp from './Popups/Error.jsx';
+import { TIPOS_CARTAS } from '../utils/constants.js';
 
 function Layout() {
-  const [categorias, setCategorias] = useState([]);
-  const { usuario, setUsuario } = useContext(UsuarioContext);
+  const [tiposCartas, setTiposCartas] = useState(TIPOS_CARTAS);
+  const { usuario, setUsuario, loading: loadingUsuario } = useContext(UsuarioContext);
   const [cantNotif, setCantNotif] = useState(0);
   const navigate = useNavigate();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    if (!usuario) {
+    console.log("Usuario en Layout:", usuario);
+    if (!loadingUsuario && (!usuario || usuario === undefined)) {
       navigate('/Login');
-    }
-    else {
-      const db = getFirestore();
-
-      let refCollectionCategorias = collection(db, "Categoria");
-      getDocs(refCollectionCategorias)
-        .then((snapshot) => {
-          setCategorias(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-        })
     }
 
     const handleResize = () => {
@@ -47,20 +44,38 @@ function Layout() {
   }, []);
 
   useEffect(() => {
-    if (usuario) {
-      const db = getFirestore();
-      const refCollection = collection(db, "Notificaciones");
-      const q = query(refCollection, where("vista", "==", false), where("usuario", "==", usuario.id));
-      getDocs(q)
-        .then((snapshot) => {
-          setCantNotif(snapshot.docs.length);
-        })
+    if (!loadingUsuario && (!usuario || usuario === undefined)) {
+      navigate('/Login');
     }
-  }, [usuario]);
+    
+    if (!loadingUsuario && usuario) {
+      async function fetchNotificaciones() {
+        try {
+          const notif = await getNotificacionByUser(usuario.usuario);
+          setCantNotif(notif.result.length);
+        } catch (error) {
+          console.error("Error al obtener notificaciones: ", error);
+          ErrorPopUp(error.response.data.error || "Error al obtener notificaciones");
+        }
+      }
 
-  const handleLogout = () => {
-    localStorage.removeItem('usuario'); // Limpiar localStorage
-    navigate('/Login'); // Redirigir a la página de login
+      // fetchNotificaciones();
+    } else {
+      setCantNotif(0);
+    }
+  }, [loadingUsuario, usuario]);
+
+  const handleLogout = async () => {
+    try{
+      await logoutUsuario();
+      navigate('/Login'); // Redirigir a la página de login
+      setUsuario(null); // Limpiar el contexto del usuario
+    }
+    catch(error){
+      console.error("Error al cerrar sesión: ", error);
+      ErrorPopUp(error.response.data.error || "Error al cerrar sesión");
+    }
+    
   };
 
   return (
@@ -69,7 +84,7 @@ function Layout() {
           <Container>
               <Navbar.Brand as={Link} to={"/"}>LPA</Navbar.Brand>
               <div className='d-flex align-items-center'>
-                {usuario && !usuario.admin && windowWidth < 992 && (
+                {usuario && usuario.rol !== "admin" && windowWidth < 992 && (
                   <Nav.Link as={Link} to="/notificaciones" className='position-relative me-2'>
                     {cantNotif > 0 && (
                         <span className="badge bg-danger rounded-circle count-notif">
@@ -83,17 +98,17 @@ function Layout() {
               </div>
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
-                  {usuario && !usuario.admin && (
-                    categorias.map((cate) => (
-                      <Nav.Link as={Link} to={`/cartas/${cate.descripcion}`} key={cate.id}>{cate.descripcion}s</Nav.Link>
+                  {usuario && usuario.rol !== "admin" && (
+                    tiposCartas.map((tipoCarta) => (
+                      <Nav.Link as={Link} to={`/cartas/${tipoCarta}`} key={tipoCarta}>{tipoCarta}s</Nav.Link>
                     ))
                   )}
-                  {usuario && usuario.admin && (
+                  {usuario && usuario.rol === "admin" && (
                     <>
                       <NavDropdown title="Cartas" id="basic-nav-dropdown">
                         <NavDropdown.Item as={Link} to={`/`}>Todas</NavDropdown.Item>
-                        {categorias.map((cate) => (
-                          <NavDropdown.Item as={Link} to={`/cartas/${cate.descripcion}`} key={cate.id}>{cate.descripcion}s</NavDropdown.Item>
+                        {tiposCartas.map((tipoCarta) => (
+                          <NavDropdown.Item as={Link} to={`/cartas/${tipoCarta}`} key={tipoCarta}>{tipoCarta}s</NavDropdown.Item>
                         ))}
                       </NavDropdown>
                       <Nav.Link as={Link} to="/admin/crearUsuario">Crear usuario</Nav.Link>
@@ -105,7 +120,7 @@ function Layout() {
                   )}
                 </Nav>
               <Nav>
-                {usuario && !usuario.admin && windowWidth > 991 && (
+                {usuario && usuario.rol !== "admin" && windowWidth > 991 && (
                   <Nav.Link as={Link} to="/notificaciones" className='position-relative'>
                     {cantNotif > 0 && (
                         <span className="badge bg-danger rounded-circle count-notif">

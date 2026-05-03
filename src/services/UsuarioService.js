@@ -27,6 +27,15 @@ export const loginUsuario = async (usuario) => {
     }
 };
 
+export const currentUsuario = async () => {
+    try {
+        const response = await axiosInstance.get("api/usuarios/current");
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const logoutUsuario = async () => {
     try {
         const response = await axiosInstance.post("api/usuarios/logout");

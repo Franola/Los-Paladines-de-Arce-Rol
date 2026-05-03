@@ -17,7 +17,7 @@ function TablaCRUD({ name, columns, get, create, update, remove }) {
     const handleSaveRow = async ({ table, row, values }) => {
         try{
             setIsSaving(true);
-            await update(values._id, values);
+            await update(values.id, values);
             table.setEditingRow(null);
         }catch (error) {
             ErrorPopUp(error.response.data.error || "Error al actualizar");
@@ -56,7 +56,7 @@ function TablaCRUD({ name, columns, get, create, update, remove }) {
             onConfirm: async () => {
                 try{
                     setIsSaving(true);
-                    await remove(row.original._id);
+                    await remove(row.original.id);
                     await fetchData();
                 }
                 catch (error) {
@@ -76,7 +76,7 @@ function TablaCRUD({ name, columns, get, create, update, remove }) {
         
         initialState: {
             columnVisibility: {
-                _id: false, //hide id column by default
+                id: false, //hide id column by default
                 'mrt-row-expand': false, //hide row expand column by default
             },
         },
