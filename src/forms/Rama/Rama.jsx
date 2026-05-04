@@ -8,7 +8,7 @@ function Rama() {
     const columns = useMemo(
         () => [
             {
-                accessorKey: "_id",
+                accessorKey: "id",
                 header: "ID",
                 enableEditing: false,
                 size: 40,

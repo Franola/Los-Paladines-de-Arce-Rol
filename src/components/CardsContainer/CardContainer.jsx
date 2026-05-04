@@ -15,11 +15,11 @@ import useAsync from '../../hooks/useAsync.js';
 
 function CardContainer() {
     const { data: hechizos, loading: loadingHechizos, fetchData: fetchHechizos } = useAsync(getHechizos);
-    // const { data: armas, loading: loadingArmas, fetchData: fetchArmas } = useAsync(getArmas);
-    // const { data: armaduras, loading: loadingArmaduras, fetchData: fetchArmaduras } = useAsync(getArmaduras);
-    // const { data: comidas, loading: loadingComidas, fetchData: fetchComidas } = useAsync(getComidas);
-    // const { data: objetos, loading: loadingObjetos, fetchData: fetchObjetos } = useAsync(getObjetos);
-    // const { data: pasivas, loading: loadingPasivas, fetchData: fetchPasivas } = useAsync(getPasivas);
+    const { data: armas, loading: loadingArmas, fetchData: fetchArmas } = useAsync(getArmas);
+    const { data: armaduras, loading: loadingArmaduras, fetchData: fetchArmaduras } = useAsync(getArmaduras);
+    const { data: comidas, loading: loadingComidas, fetchData: fetchComidas } = useAsync(getComidas);
+    const { data: objetos, loading: loadingObjetos, fetchData: fetchObjetos } = useAsync(getObjetos);
+    const { data: pasivas, loading: loadingPasivas, fetchData: fetchPasivas } = useAsync(getPasivas);
 
     const [categorias] = useState(TIPOS_CARTAS);
     const { categoriaParam } = useParams();
@@ -29,34 +29,33 @@ function CardContainer() {
         if (!loadingUsuario && usuario) {
             if (!categoriaParam) {
                 fetchHechizos();
-                // fetchArmas();
-                // fetchArmaduras();
-                // fetchComidas();
-                // fetchObjetos();
-                // fetchPasivas();
+                fetchArmas();
+                fetchArmaduras();
+                fetchComidas();
+                fetchObjetos();
+                fetchPasivas();
             } else {
                 switch (categoriaParam) {
                     case "Hechizo": fetchHechizos(); break;
-                    // case "Pasiva": fetchPasivas(); break;
-                    // case "Arma": fetchArmas(); break;
-                    // case "Armadura": fetchArmaduras(); break;
-                    // case "Comida": fetchComidas(); break;
-                    // case "Objeto": fetchObjetos(); break;
+                    case "Pasiva": fetchPasivas(); break;
+                    case "Arma": fetchArmas(); break;
+                    case "Armadura": fetchArmaduras(); break;
+                    case "Comida": fetchComidas(); break;
+                    case "Objeto": fetchObjetos(); break;
                     default: break;
                 }
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loadingUsuario, usuario, categoriaParam]);
 
     const obtenerItemsPorCategoria = (categoria) => {
         switch (categoria) {
             case "Hechizo": return hechizos || [];
-            // case "Pasiva": return pasivas || [];
-            // case "Arma": return armas || [];
-            // case "Armadura": return armaduras || [];
-            // case "Comida": return comidas || [];
-            // case "Objeto": return objetos || [];
+            case "Pasiva": return pasivas || [];
+            case "Arma": return armas || [];
+            case "Armadura": return armaduras || [];
+            case "Comida": return comidas || [];
+            case "Objeto": return objetos || [];
             default: return [];
         }
     }
@@ -100,7 +99,7 @@ function CardContainer() {
 
     return (
         <div className="itemListContainer">
-            {loadingHechizos // || loadingArmas || loadingArmaduras || loadingComidas || loadingObjetos || loadingPasivas
+            {loadingHechizos || loadingArmas || loadingArmaduras || loadingComidas || loadingObjetos || loadingPasivas
                 ? <LoadingSpiner /> 
                 : !categoriaParam ? vistaSinCategoria() : vistaConCategoria()
             }
