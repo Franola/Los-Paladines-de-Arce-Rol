@@ -20,6 +20,7 @@ import Armadura from './forms/Armadura/Armadura.jsx';
 import Pasiva from './forms/Pasiva/Pasiva.jsx';
 import Comida from './forms/Comida/Comida.jsx';
 import Objeto from './forms/Objeto/Objeto.jsx';
+import Personaje from './forms/Personaje/Personaje.jsx';
 
 function App() {
 
@@ -45,6 +46,7 @@ function App() {
               <Route path='admin/pasivas' element={<Pasiva/>} />
               <Route path='admin/comidas' element={<Comida/>} />
               <Route path='admin/objetos' element={<Objeto/>} />
+              <Route path='admin/personajes' element={<Personaje/>} />
               <Route path='*' element={<Error/>} />
             </Route>
             <Route path='login' element={<Login />} />

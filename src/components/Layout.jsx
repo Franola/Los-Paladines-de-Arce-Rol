@@ -112,6 +112,7 @@ function Layout() {
                         ))}
                       </NavDropdown>
                       <Nav.Link as={Link} to="/admin/crearUsuario">Crear usuario</Nav.Link>
+                      <Nav.Link as={Link} to="/admin/personajes">Personajes</Nav.Link>
                       <NavDropdown title="Funcionalidades" id="basic-nav-dropdown">
                         <NavDropdown.Item as={Link} to={`/admin/ofrecerCartas`}>Ofrecer cartas</NavDropdown.Item>
                       </NavDropdown>
