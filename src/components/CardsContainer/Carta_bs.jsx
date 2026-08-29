@@ -7,7 +7,7 @@ function Carta_bs({ id, name, involved_companies, cover, price }) {
 
     return (
         <Card style={{ width: '18rem' }}>
-            <Card.Img variant="top" src="src/assets/espada.png" />
+            <Card.Img variant="top" src={`/src/assets/cartas/${cover}`} />
             <Card.Body>
                 <Card.Title>Espada</Card.Title>
                 <Card.Text>

@@ -65,7 +65,7 @@ function CardContainer() {
             <>
                 {categorias.map((cate) => {
                     const itemsFiltrados = obtenerItemsPorCategoria(cate);
-                    if (itemsFiltrados.length === 0 && (!usuario || usuario.rol !== "admin")) return null;
+                    if (!usuario) return null;
                     return (
                         <div className='unaCategoria' key={cate}>
                             <div className="d-flex align-items-center mb-3">

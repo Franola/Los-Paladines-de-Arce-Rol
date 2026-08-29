@@ -20,6 +20,7 @@ function CardList({ items }) {
         <div className="itemList">
             {items.map((item) => (
                 <Carta item={item} key={item.id} onClick={() => click(item)}/>
+                // <Carta_bs cover={item.imagen} key={item.id} onClick={() => click(item)}/>
             ))}
 
             <ModalCarta

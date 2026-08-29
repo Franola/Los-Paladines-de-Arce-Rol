@@ -6,24 +6,41 @@ import {
 } from 'mantine-react-table';
 import useAsync from '../hooks/useAsync.js';
 import { MantineProvider, Button, Stack, Title, Flex, Tooltip, ActionIcon, Text } from '@mantine/core';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconTrash, IconUsers } from '@tabler/icons-react';
 import { ModalsProvider, modals } from '@mantine/modals';
 import ErrorPopUp from './Popups/Error.jsx';
+import AsignarModalContent from './AsignarModalContent.jsx';
 
-function TablaCRUD({ name, columns, get, create, update, remove }) {
+function TablaCRUD({ 
+    name, 
+    columns, 
+    get, 
+    create, 
+    update, 
+    remove, 
+    usuariosAsignar, 
+    asignarUsuario,
+    asignarItems,
+    asignarFuncion,
+    asignarLabel = "Personaje",
+    asignarPlaceholder = "Seleccione los personajes",
+    asignarTooltip = "Asignar a personaje"
+}) {
     const { data, loading, fetchData, error } = useAsync(get);
     const [isSaving, setIsSaving] = useState(false);
 
+    const itemsParaAsignar = asignarItems || usuariosAsignar;
+    const funcionParaAsignar = asignarFuncion || asignarUsuario;
+
     const handleSaveRow = async ({ table, row, values }) => {
-        try{
+        try {
             setIsSaving(true);
             await update(values.id, values);
             table.setEditingRow(null);
-        }catch (error) {
-            ErrorPopUp(error.response.data.error || "Error al actualizar");
+        } catch (error) {
+            ErrorPopUp(error.response?.data?.error || "Error al actualizar");
             console.error("Error updating:", error);
-        }
-        finally{
+        } finally {
             setIsSaving(false);
         }
     };
@@ -35,10 +52,9 @@ function TablaCRUD({ name, columns, get, create, update, remove }) {
             exitCreatingMode();
             await fetchData();
         } catch (error) {
-            ErrorPopUp(error.response.data.error || "Error al crear");
+            ErrorPopUp(error.response?.data?.error || "Error al crear");
             console.error("Error creating:", error);
-        }
-        finally{
+        } finally {
             setIsSaving(false);
         }
     };
@@ -54,21 +70,39 @@ function TablaCRUD({ name, columns, get, create, update, remove }) {
             labels: { confirm: 'Eliminar', cancel: 'Cancelar' },
             confirmProps: { color: 'red' },
             onConfirm: async () => {
-                try{
+                try {
                     setIsSaving(true);
                     await remove(row.original.id);
                     await fetchData();
-                }
-                catch (error) {
+                } catch (error) {
                     console.error("Error deleting:", error);
-                    ErrorPopUp(error.response.data.error || "Error al eliminar");
-                }
-                finally{
+                    ErrorPopUp(error.response?.data?.error || "Error al eliminar");
+                } finally {
                     setIsSaving(false);
                 }
             },
         });
-    }
+    };
+
+    const openAsignarModal = (row) => {
+        modals.open({
+            title: `Asignar ${name}`,
+            children: (
+                <AsignarModalContent
+                    label={asignarLabel}
+                    placeholder={asignarPlaceholder}
+                    items={itemsParaAsignar}
+                    onCancel={modals.closeAll}
+                    onAsignar={(selectedIds) => {
+                        if (funcionParaAsignar) {
+                            funcionParaAsignar(row.original.id, selectedIds);
+                        }
+                        modals.closeAll();
+                    }}
+                />
+            )
+        });
+    };
 
     const table = useMantineReactTable({
         columns,
@@ -107,7 +141,7 @@ function TablaCRUD({ name, columns, get, create, update, remove }) {
                 <Title order={3}>Editar {name}</Title>
                 {internalEditComponents}
                 <Flex justify="flex-end" mt="xl">
-                <MRT_EditActionButtons variant="text" table={table} row={row} />
+                    <MRT_EditActionButtons variant="text" table={table} row={row} />
                 </Flex>
             </Stack>
         ),
@@ -123,34 +157,39 @@ function TablaCRUD({ name, columns, get, create, update, remove }) {
                         <IconTrash />
                     </ActionIcon>
                 </Tooltip>
+                {itemsParaAsignar && (
+                    <Tooltip label={asignarTooltip}>
+                        <ActionIcon color="blue" onClick={() => openAsignarModal(row)}>
+                            <IconUsers />
+                        </ActionIcon>
+                    </Tooltip>
+                )}
             </Flex>
         ),
         renderTopToolbarCustomActions: ({ table }) => (
-        <div style={{ display: 'flex', gap: '8px' }}>
-            <Button
-                onClick={() => {
-                    table.setCreatingRow(true);
-                }}
-            >
-                Nuevo
-            </Button>
-            <Button
-                variant="outline"
-                onClick={async () => {
-                    await fetchData();
-                }}
-            >
-                Actualizar
-            </Button>
-        </div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+                <Button
+                    onClick={() => {
+                        table.setCreatingRow(true);
+                    }}
+                >
+                    Nuevo
+                </Button>
+                <Button
+                    variant="outline"
+                    onClick={async () => {
+                        await fetchData();
+                    }}
+                >
+                    Actualizar
+                </Button>
+            </div>
         ),
         state: { 
             isLoading: loading,
             isSaving: isSaving,
         },
     });
-
-    
 
     return (
         <MantineProvider
