@@ -1,28 +1,90 @@
-.notificaciones{
-    
-}
+.notificaciones {}
 
-.notificacion{
-    padding: .5rem;
-    border: 1px solid;
-    border-color: gray;
+.notificacion {
+    padding: .75rem;
+    border: 1px solid #444;
+    border-radius: 8px;
     max-width: 800px;
     width: 100%;
+    margin-bottom: 0.75rem;
+    background-color: #222;
+    transition: background-color 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
 }
 
-.sin-ver:hover{
+.sin-ver {
+    border-color: #555;
+}
+
+.sin-ver:hover {
+    background-color: #2a2a2a;
+    border-color: #777;
+}
+
+.vista {
+    opacity: 0.65;
     background-color: #1a1a1a;
 }
 
-.vista{
-    opacity: 0.5;
+.vista:hover {
+    opacity: 0.85;
 }
 
-.cartas-notificacion{
+.cartas-notificacion {
     margin-bottom: 1rem;
+    cursor: pointer;
 }
 
-.carta-notificacion{
+.carta-notificacion {
     width: 100px;
     height: 144px;
+}
+
+.btn-toggle-vista {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-toggle-vista.no-vista {
+    color: #60a5fa;
+    background-color: rgba(96, 165, 250, 0.12);
+    border-color: rgba(96, 165, 250, 0.3);
+}
+
+.btn-toggle-vista.no-vista:hover {
+    background-color: rgba(96, 165, 250, 0.25);
+    color: #93c5fd;
+    transform: scale(1.08);
+}
+
+.btn-toggle-vista.vista {
+    color: #9ca3af;
+    background-color: rgba(156, 163, 175, 0.1);
+}
+
+.btn-toggle-vista.vista:hover {
+    background-color: rgba(156, 163, 175, 0.2);
+    color: #e5e7eb;
+    transform: scale(1.08);
+}
+
+.btn-toggle-vista:active {
+    transform: scale(0.95);
+}
+
+.imagen-visto-notificacion {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}
+
+.imagen-calendario-notificacion {
+    width: 18px;
+    height: 18px;
 }

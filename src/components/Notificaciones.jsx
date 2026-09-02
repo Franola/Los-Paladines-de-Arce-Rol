@@ -1,4 +1,4 @@
-import './notificaciones.css';
+import './Notificaciones.css';
 import { useEffect, useState } from "react";
 import { Container } from 'react-bootstrap';
 import { useContext } from 'react';
@@ -7,6 +7,7 @@ import ModalSeleccionarCartaNotif from './ModalSeleccionarCartaNotif';
 import LoadingSpiner from './LoadingSpiner';
 import { getNotificacionByUser, updateNotificacion } from '../services/NotificacionService.js';
 import ErrorPopUp from './Popups/Error.jsx';
+import { IconEye, IconEyeOff } from '@tabler/icons-react';
 
 function Notificaciones() {
     const [notificaciones, setNotificaciones] = useState([]);
@@ -91,10 +92,28 @@ function Notificaciones() {
     const mostrarNotificacion = (notif) => {
         return (
             <div className={`notificacion ${(!notif.vista ? "sin-ver" : "vista")}`} key={notif.id}>
-                {notif.mensaje && notif.mensaje !== "" && 
-                    <p>{notif.mensaje}</p>}
+                <div className='d-flex align-items-center justify-content-between'>
+                    {notif.mensaje && notif.mensaje !== "" && 
+                        <p className='m-0'>{notif.mensaje}</p>}
+                    <div className='d-flex align-items-center ms-auto'>
+                        {!notif.tipo?.includes('Selección') && (
+                            <button
+                                type="button"
+                                className={`btn-toggle-vista ${notif.vista ? 'vista' : 'no-vista'}`}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleClickVista(notif);
+                                }}
+                                title={notif.vista ? "Marcar como no vista" : "Marcar como vista"}
+                                aria-label={notif.vista ? "Marcar como no vista" : "Marcar como vista"}
+                            >
+                                {notif.vista ? <IconEye size={22} /> : <IconEyeOff size={22} />}
+                            </button>
+                        )}
+                    </div>
+                </div>
                     
-                <div className='d-flex align-items-center'>
+                <div className='d-flex align-items-center mt-2'>
                     <img src="/src/assets/icon-calendario.png" alt="" className='imagen-calendario-notificacion me-1'/>
                     <p style={{margin: 0}}>{formatearFecha(notif.fecha)}</p>
                 </div>
@@ -109,13 +128,22 @@ function Notificaciones() {
         return (
             <div className={`notificacion ${(!notif.vista ? "sin-ver" : "vista")}`} key={notif.id}>
                 <div className='d-flex align-items-center justify-content-between'>
-                    <p>{titulo}</p>
+                    <p className='m-0'>{titulo}</p>
                     <div className='d-flex align-items-center'>
                         {notif.tipo.includes('Selección') ?  <></>
                             :
-                            notif.vista ?  <img src="/src/assets/icon-visto.png" alt="" className='imagen-visto-notificacion ms-auto' onClick={() => handleClickVista(notif)}/>
-                                        :
-                                            <img src="/src/assets/icon-no-visto.png" alt="" className='imagen-visto-notificacion ms-auto' onClick={() => handleClickVista(notif)}/>
+                            <button
+                                type="button"
+                                className={`btn-toggle-vista ${notif.vista ? 'vista' : 'no-vista'}`}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleClickVista(notif);
+                                }}
+                                title={notif.vista ? "Marcar como no vista" : "Marcar como vista"}
+                                aria-label={notif.vista ? "Marcar como no vista" : "Marcar como vista"}
+                            >
+                                {notif.vista ? <IconEye size={22} /> : <IconEyeOff size={22} />}
+                            </button>
                         }
                     </div>
                 </div>
