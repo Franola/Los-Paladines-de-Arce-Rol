@@ -52,14 +52,14 @@ function Layout() {
       async function fetchNotificaciones() {
         try {
           const notif = await getNotificacionByUser(usuario.usuario);
-          setCantNotif(notif.result.length);
+          setCantNotif(notif.result.filter(notif => !notif.vista).length);
         } catch (error) {
           console.error("Error al obtener notificaciones: ", error);
           ErrorPopUp(error.response.data.error || "Error al obtener notificaciones");
         }
       }
 
-      // fetchNotificaciones();
+      fetchNotificaciones();
     } else {
       setCantNotif(0);
     }
