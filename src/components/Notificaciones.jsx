@@ -1,73 +1,98 @@
 import './notificaciones.css';
 import { useEffect, useState } from "react";
 import { Container } from 'react-bootstrap';
-import {
-    getFirestore,
-    getDocs,
-    collection,
-    where,
-    orderBy,
-    query,
-    doc,
-    updateDoc,
-    or,
-    Timestamp
-} from "firebase/firestore";
 import { useContext } from 'react';
 import { UsuarioContext } from './context/usuarioContext';
 import ModalSeleccionarCartaNotif from './ModalSeleccionarCartaNotif';
 import LoadingSpiner from './LoadingSpiner';
+import { getNotificacionByUser, updateNotificacion } from '../services/NotificacionService.js';
+import ErrorPopUp from './Popups/Error.jsx';
 
 function Notificaciones() {
     const [notificaciones, setNotificaciones] = useState([]);
-    const { usuario } = useContext(UsuarioContext);
+    const { usuario, loading: loadingUsuario } = useContext(UsuarioContext);
     const [modalShow, setModalShow] = useState(false);
     const [cartasModal, setCartasModal] = useState([]);
     const [notificacionModal, setNotificacionModal] = useState();
     const [loading, setLoading] = useState(true);
     
-    const db = getFirestore();
-    const refCollectionNotif = collection(db, "Notificaciones");
-
     useEffect(() => {
         setLoading(true);
-        if (usuario) {
-            const q = query(refCollectionNotif, where("usuario", "==", usuario.id), orderBy("fecha", "desc"));
-            getDocs(q)
-                .then((snapshot) => {
-                    setNotificaciones(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-                })
-                .finally(() => {
+        if (!loadingUsuario && usuario) {
+            async function fetchNotificaciones() {
+                try {
+                    const notif = await getNotificacionByUser(usuario.id || usuario.usuario);
+                    setNotificaciones(notif.result || notif || []);
+                }
+                catch(error){
+                    console.error("Error al obtener notificaciones: ", error);
+                    ErrorPopUp(error?.response?.data?.error || "Error al obtener notificaciones");
+                }
+                finally {
                     setLoading(false);
-                })
+                }
+            }
+            fetchNotificaciones();
         }
-    }, [usuario]);
+    }, [loadingUsuario, usuario]);
 
     const hideModal = () => {
         setModalShow(false);
         setCartasModal([]);
         setNotificacionModal();
-    }
+    };
 
     const formatearFecha = (fecha) => {
-        return `${fecha.toDate().toLocaleDateString("en-GB")} - ${fecha.toDate().toLocaleTimeString("en-US", { hour12: false })}`;
-    }
+        if (!fecha) return "";
+        const dateObj = typeof fecha === "string" ? new Date(fecha) : fecha.toDate ? fecha.toDate() : new Date(fecha);
+        return `${dateObj.toLocaleDateString("es-ES")} - ${dateObj.toLocaleTimeString("es-ES", { hour: '2-digit', minute: '2-digit' })}`;
+    };
+
+    const getCartasFromNotif = (notif) => {
+        if (notif.cartas && Array.isArray(notif.cartas) && notif.cartas.length > 0) {
+            return notif.cartas;
+        }
+        const cartas = [];
+        if (notif.hechizos && Array.isArray(notif.hechizos)) cartas.push(...notif.hechizos);
+        if (notif.armas && Array.isArray(notif.armas)) cartas.push(...notif.armas);
+        if (notif.armaduras && Array.isArray(notif.armaduras)) cartas.push(...notif.armaduras);
+        if (notif.pasivas && Array.isArray(notif.pasivas)) cartas.push(...notif.pasivas);
+        return cartas;
+    };
 
     const handleClick = (notif) => {
-        if(!notif.vista){
-            if(notif.tipo === 'Selección de carta') {
-                setCartasModal(notif.cartas);
+        if (!notif.vista && !notif.tipo.includes('Asignación')) {
+            const cartas = getCartasFromNotif(notif);
+            if (cartas.length > 0) {
+                setCartasModal(cartas);
                 setNotificacionModal(notif);
                 setModalShow(true);
             }
         }
+    };
+
+    const handleClickVista = async (notif) => {
+        try {
+            await updateNotificacion(notif.id, {
+                vista: !notif.vista
+            });
+
+            notif.vista = !notif.vista;
+            setNotificaciones([...notificaciones]);
+        }
+        catch(error){
+            console.error("Error al actualizar notificacion: ", error);
+            ErrorPopUp(error?.response?.data?.error || "Error al actualizar notificacion");
+        }
     }
+
+
 
     const mostrarNotificacion = (notif) => {
         return (
             <div className={`notificacion ${(!notif.vista ? "sin-ver" : "vista")}`} key={notif.id}>
-                {notif.mensaje && notif.mensaje != "" && 
-                    <p>{notif.mensaje}</p> }
+                {notif.mensaje && notif.mensaje !== "" && 
+                    <p>{notif.mensaje}</p>}
                     
                 <div className='d-flex align-items-center'>
                     <img src="/src/assets/icon-calendario.png" alt="" className='imagen-calendario-notificacion me-1'/>
@@ -75,43 +100,67 @@ function Notificaciones() {
                 </div>
             </div>
         );
-    }
+    };
 
-    const mostrarSeleccionCarta = (notif) => {
+    const mostrarNotificacionConCartas = (notif) => {
+        const cartas = getCartasFromNotif(notif);
+        const titulo = notif.tipo.includes('Asignación') ? 'Tienes una carta asignada:' : 'Tienes cartas para seleccionar:';
+
         return (
             <div className={`notificacion ${(!notif.vista ? "sin-ver" : "vista")}`} key={notif.id}>
-                <p>Tienes cartas para seleccionar:</p>
-                <Container className="cartas-notificacion d-flex flex-wrap align-items-center" onClick={()=>handleClick(notif)}>
-                    {notif.cartas.map((carta) => {
+                <div className='d-flex align-items-center justify-content-between'>
+                    <p>{titulo}</p>
+                    <div className='d-flex align-items-center'>
+                        {notif.tipo.includes('Selección') ?  <></>
+                            :
+                            notif.vista ?  <img src="/src/assets/icon-visto.png" alt="" className='imagen-visto-notificacion ms-auto' onClick={() => handleClickVista(notif)}/>
+                                        :
+                                            <img src="/src/assets/icon-no-visto.png" alt="" className='imagen-visto-notificacion ms-auto' onClick={() => handleClickVista(notif)}/>
+                        }
+                    </div>
+                </div>
+                <Container className="cartas-notificacion d-flex flex-wrap align-items-center" onClick={() => handleClick(notif)}>
+                    {cartas.map((carta) => {
+                        const imgUrl = carta.imagen?.startsWith('http') ? carta.imagen : `/src/assets/cartas/${carta.imagen}`;
                         return (
-                                <img key={carta.id} src={`/src/assets/cartas/${carta.imagen}`} alt={carta.clase} className='carta-notificacion mx-1'/>
-                            );
+                            <img 
+                                key={carta.id} 
+                                src={imgUrl} 
+                                alt={carta.nombre || carta.clase || "Carta"} 
+                                className='carta-notificacion mx-1'
+                            />
+                        );
                     })}
                 </Container>
-                <div className='d-flex align-items-center'>
+                <div className='d-flex align-items-center mt-2'>
                     <img src="/src/assets/icon-calendario.png" alt="" className='imagen-calendario-notificacion me-1'/>
                     <p style={{margin: 0}}>{formatearFecha(notif.fecha)}</p>
                 </div>
             </div>
         );
-    }
+    };
 
     return (
         <div className="notificaciones d-flex flex-column align-items-center">
-            {loading && <LoadingSpiner/>}
-            {notificaciones && (
-                notificaciones.map((notif) => (
-                    (notif.tipo === 'Selección de carta') ? mostrarSeleccionCarta(notif) : mostrarNotificacion(notif)
-                ))
+            {(loading || loadingUsuario) && <LoadingSpiner/>}
+            {!loading && notificaciones && notificaciones.length > 0 && (
+                notificaciones.map((notif) => {
+                    const cartas = getCartasFromNotif(notif);
+                    return cartas.length > 0 ? mostrarNotificacionConCartas(notif) : mostrarNotificacion(notif);
+                })
             )}
-
-            <ModalSeleccionarCartaNotif
-                show={modalShow}
-                onHide={hideModal}
-                cartas={cartasModal}
-                notificacion={notificacionModal}
-                admin={usuario.admin}
-            />
+            {!loading && notificaciones && notificaciones.length === 0 && (
+                <p className="text-muted mt-4">No tienes notificaciones pendientes.</p>
+            )}
+            {!loading && !loadingUsuario && (
+                <ModalSeleccionarCartaNotif
+                    show={modalShow}
+                    onHide={hideModal}
+                    cartas={cartasModal}
+                    notificacion={notificacionModal}
+                    admin={usuario?.rol === "admin"}
+                />
+            )}
         </div>
     );
 }
