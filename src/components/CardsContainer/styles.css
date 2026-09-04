@@ -1,4 +1,4 @@
-.itemListContainer{
+.itemListContainer {
     height: 100%;
     display: flex;
     padding-top: 20px;
@@ -6,38 +6,43 @@
     align-items: center;
 }
 
-.unaCategoria{
+.unaCategoria {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 2.5rem;
 }
 
-.itemList{
+.itemList {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
 }
 
-.card{
+.card {
     --bs-card-border-color: #fff;
 }
 
-.card-body{
+.card-body {
     background-color: #3e3e3e;
 }
 
-.list-group{
+.list-group {
     --bs-list-group-bg: #3e3e3e;
 }
 
-.carta-icon{
+.carta-icon {
     width: 2rem;
     height: 2rem;
 }
 
-.carta-info{
+.carta-info {
     margin-top: auto;
     margin-bottom: auto;
     margin-left: 10px;
+}
+
+.carta-img {
+    width: 10rem;
+    cursor: pointer;
 }

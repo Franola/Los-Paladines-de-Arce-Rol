@@ -1,15 +1,17 @@
-.imagen-usuario-notificacion{
-    width: 20px;
-    height: 20px;
+.imagen-usuario-notificacion {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
 }
 
-.imagen-calendario-notificacion{
-    width: 20px;
-    height: 20px;
+.imagen-calendario-notificacion {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
 }
 
-.imagen-visto-notificacion{
+.imagen-visto-notificacion {
     width: 20px;
     height: 20px;
+    object-fit: contain;
 }
-

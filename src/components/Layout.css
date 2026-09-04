@@ -1,55 +1,56 @@
 .bg-body-tertiary {
     background-color: var(--color-secundario) !important;
-    /*color: white !important;*/
-    
 }
 
-.navbar-brand{
-    /*color: white !important;*/
-    font-size: 30px;
+.navbar-brand {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.nav-link {
+    font-size: 17px;
     font-weight: 500;
+    white-space: nowrap;
 }
 
-.nav-link{
-    font-size: 20px;
-    font-weight: 500;
+.navbar .nav-item {
+    white-space: nowrap;
 }
 
-img{
-    width: 170px;
-    height: auto;
-}
-
-.cardd{
-    position: relative;
-    text-align: center;
-}
-
-.usuario{
-    /*position: absolute;
-    right: 10px;*/
-}
-
-.dropdown-menu[data-bs-popper]{
-    /*left: -90px;*/
-}
-
-.dropdown-menu{
+.dropdown-menu {
     --bs-dropdown-bg: #037731;
     --bs-dropdown-color: var(--color-primario);
     --bs-dropdown-link-color: var(--color-primario);
     --bs-dropdown-link-hover-bg: #14b353;
     --bs-dropdown-link-active-bg: #14b353;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
-.icon-notif{
-    height: 40px;
-    width: 40px;
+.icon-notif-link {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem !important;
 }
 
-.count-notif{
-    font-size: small;
+.icon-notif-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-notif {
+    height: 30px;
+    width: 30px;
+    object-fit: contain;
+}
+
+.count-notif {
+    font-size: 0.7rem;
     position: absolute;
-    top: 35px;
-    left: 30px;
+    top: -4px;
+    right: -6px;
+    padding: 2px 6px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
 }
