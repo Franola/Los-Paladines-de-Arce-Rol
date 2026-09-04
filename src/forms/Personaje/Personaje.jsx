@@ -1,4 +1,3 @@
-import './Personaje.css';
 import Container from "react-bootstrap/Container"
 import { useMemo } from 'react';
 import { getPersonajes, createPersonaje, updatePersonaje, deletePersonaje } from '../../services/PersonajeService.js';

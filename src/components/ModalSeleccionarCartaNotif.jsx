@@ -5,11 +5,13 @@ import { createInventario } from '../services/InventarioService.js';
 import { getPersonajes } from '../services/PersonajeService.js';
 import { UsuarioContext } from './context/usuarioContext';
 import { NotificacionContext } from './context/notificacionContext';
+import { PersonajeContext } from './context/personajeContext';
 import Swal from 'sweetalert2';
 
 function ModalSeleccionarCartaNotif(props) {
     const { usuario } = useContext(UsuarioContext);
     const { marcarComoVista } = useContext(NotificacionContext);
+    const { personajeActivo, fetchInventario } = useContext(PersonajeContext);
     const [cartaSeleccionada, setCartaSeleccionada] = useState();
 
     useEffect(() => {
@@ -70,7 +72,7 @@ function ModalSeleccionarCartaNotif(props) {
 
         try {
             // 1. Obtener el personaje asignado
-            let personajeId = props.notificacion?.personajeId || props.notificacion?.personaje?.id;
+            let personajeId = props.notificacion?.personajeId || props.notificacion?.personaje?.id || personajeActivo?.id;
 
             if (!personajeId && usuario) {
                 if (usuario.personajes && usuario.personajes.length > 0) {
@@ -110,6 +112,11 @@ function ModalSeleccionarCartaNotif(props) {
             // 4. Actualizar la notificación como vista en el contexto global
             if (props.notificacion?.id) {
                 await marcarComoVista(props.notificacion.id);
+            }
+
+            // 5. Recargar inventario del personaje activo
+            if (fetchInventario) {
+                await fetchInventario();
             }
 
             Swal.fire({

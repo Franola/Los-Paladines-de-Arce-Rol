@@ -1,11 +1,13 @@
 import { createContext, useState, useEffect, useContext, useCallback } from "react";
 import { UsuarioContext } from "./usuarioContext.jsx";
+import { PersonajeContext } from "./personajeContext.jsx";
 import { getNotificacionByUser, updateNotificacion } from "../../services/NotificacionService.js";
 
 export const NotificacionContext = createContext();
 
 export const NotificacionProvider = ({ children }) => {
     const { usuario, loading: loadingUsuario } = useContext(UsuarioContext);
+    const { personajeActivo } = useContext(PersonajeContext);
     const [notificaciones, setNotificaciones] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -18,7 +20,23 @@ export const NotificacionProvider = ({ children }) => {
 
         try {
             setLoading(true);
-            const res = await getNotificacionByUser(usuario.id || usuario.usuario);
+            let targetUserId = null;
+
+            if (usuario.rol === "admin" && personajeActivo) {
+                // Si el admin tiene un personaje seleccionado, carga las notificaciones del dueño de ese personaje
+                targetUserId = personajeActivo.usuarioId || personajeActivo.usuario?.id || personajeActivo.usuario?.usuario;
+            } else {
+                // Usuario regular o admin en modo Master
+                targetUserId = usuario.id || usuario.usuario;
+            }
+
+            if (!targetUserId) {
+                setNotificaciones([]);
+                setLoading(false);
+                return;
+            }
+
+            const res = await getNotificacionByUser(targetUserId);
             setNotificaciones(res.result || res || []);
         } catch (error) {
             console.error("Error al cargar notificaciones:", error);
@@ -26,7 +44,7 @@ export const NotificacionProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    }, [usuario]);
+    }, [usuario, personajeActivo]);
 
     useEffect(() => {
         if (!loadingUsuario) {

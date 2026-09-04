@@ -18,6 +18,15 @@ export const getPersonajeById = async (id) => {
     }
 };
 
+export const getPersonajesByUser = async (userId) => {
+    try {
+        const response = await axiosInstance.get(`api/personajes/usuario/${userId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const createPersonaje = async (personaje) => {
     try {
         const response = await axiosInstance.post("api/personajes", personaje);

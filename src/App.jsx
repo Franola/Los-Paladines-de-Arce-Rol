@@ -11,6 +11,7 @@ import OfrecerCartas from './components/OfrecerCartas'
 import Error from './components/Error'
 import Login from './components/Login'
 import { UsuarioProvider } from './components/context/usuarioContext';
+import { PersonajeProvider } from './components/context/personajeContext';
 import { NotificacionProvider } from './components/context/notificacionContext';
 import AdminNotificaciones from './components/AdminNotificaciones';
 import Clase from './forms/Clase/Clase.jsx';
@@ -28,33 +29,35 @@ function App() {
   return (
     <>
       <UsuarioProvider>
-        <NotificacionProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path='/' element={<Layout/>}>
-                <Route index element={<CardContainer/>}/>
-                <Route path='cartas/:categoriaParam' element={<CardContainer/>} />
-                <Route path='notificaciones' element={<Notificaciones/>} />
-                <Route path='/clases' element={<Clase/>} />
-                <Route path='/ramas' element={<Rama/>} />
-                {/* ADMIN */}
-                <Route path='admin/crearUsuario' element={<Usuario/>} />
-                {/* <Route path='admin/editarUsuario/:id' element={<Usuario/>} />*/}
-                <Route path='admin/ofrecerCartas' element={<OfrecerCartas/>} />
-                <Route path='admin/notificaciones' element={<AdminNotificaciones/>} />
-                <Route path='admin/hechizos' element={<Hechizo/>} />
-                <Route path='admin/armas' element={<Arma/>} />
-                <Route path='admin/armaduras' element={<Armadura/>} />
-                <Route path='admin/pasivas' element={<Pasiva/>} />
-                <Route path='admin/comidas' element={<Comida/>} />
-                <Route path='admin/objetos' element={<Objeto/>} />
-                <Route path='admin/personajes' element={<Personaje/>} />
-                <Route path='*' element={<Error/>} />
-              </Route>
-              <Route path='login' element={<Login />} />
-            </Routes>
-          </BrowserRouter>
-        </NotificacionProvider>
+        <PersonajeProvider>
+          <NotificacionProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path='/' element={<Layout/>}>
+                  <Route index element={<CardContainer/>}/>
+                  <Route path='cartas/:categoriaParam' element={<CardContainer/>} />
+                  <Route path='notificaciones' element={<Notificaciones/>} />
+                  <Route path='/clases' element={<Clase/>} />
+                  <Route path='/ramas' element={<Rama/>} />
+                  {/* ADMIN */}
+                  <Route path='admin/crearUsuario' element={<Usuario/>} />
+                  {/* <Route path='admin/editarUsuario/:id' element={<Usuario/>} />*/}
+                  <Route path='admin/ofrecerCartas' element={<OfrecerCartas/>} />
+                  <Route path='admin/notificaciones' element={<AdminNotificaciones/>} />
+                  <Route path='admin/hechizos' element={<Hechizo/>} />
+                  <Route path='admin/armas' element={<Arma/>} />
+                  <Route path='admin/armaduras' element={<Armadura/>} />
+                  <Route path='admin/pasivas' element={<Pasiva/>} />
+                  <Route path='admin/comidas' element={<Comida/>} />
+                  <Route path='admin/objetos' element={<Objeto/>} />
+                  <Route path='admin/personajes' element={<Personaje/>} />
+                  <Route path='*' element={<Error/>} />
+                </Route>
+                <Route path='login' element={<Login />} />
+              </Routes>
+            </BrowserRouter>
+          </NotificacionProvider>
+        </PersonajeProvider>
       </UsuarioProvider>
     </>
   )
