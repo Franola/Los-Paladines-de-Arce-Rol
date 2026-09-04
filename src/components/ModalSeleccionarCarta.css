@@ -1,25 +1,27 @@
-.modal-seleccionar-carta{
-
-
+.modal-seleccionar-carta-content {
+    border-radius: 10px;
+    background-color: #1A1B1E !important;
 }
 
-.imagen-modal-seleccionar-carta{
-    width: 200px;
-    height: auto;
+.imagen-modal-seleccionar-carta {
+    width: 130px;
+    height: 185px;
+    object-fit: contain;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.modal-seleccionar-carta-dialog{
-    max-width: inherit;
-    margin: 50px;
+.imagen-modal-seleccionar-carta:hover {
+    transform: scale(1.05);
 }
 
-.modal-seleccionar-carta-content{
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+.modal-seleccionar-carta-dialog {
+    max-width: 900px;
 }
 
-.seleccionada{
-    border-radius: 5px;
-    background-color: var(--color-secundario);
+.seleccionada-wrapper {
+    transform: translateY(-4px);
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }
