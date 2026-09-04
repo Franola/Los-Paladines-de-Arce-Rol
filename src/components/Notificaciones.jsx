@@ -1,46 +1,24 @@
 import './Notificaciones.css';
-import { useEffect, useState } from "react";
+import { useState, useContext } from "react";
 import { Container } from 'react-bootstrap';
-import { useContext } from 'react';
 import { UsuarioContext } from './context/usuarioContext';
+import { NotificacionContext } from './context/notificacionContext';
 import ModalSeleccionarCartaNotif from './ModalSeleccionarCartaNotif';
 import LoadingSpiner from './LoadingSpiner';
-import { getNotificacionByUser, updateNotificacion } from '../services/NotificacionService.js';
 import ErrorPopUp from './Popups/Error.jsx';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 
 function Notificaciones() {
-    const [notificaciones, setNotificaciones] = useState([]);
     const { usuario, loading: loadingUsuario } = useContext(UsuarioContext);
+    const { notificaciones, loading: loadingNotif, toggleVista } = useContext(NotificacionContext);
     const [modalShow, setModalShow] = useState(false);
     const [cartasModal, setCartasModal] = useState([]);
     const [notificacionModal, setNotificacionModal] = useState();
-    const [loading, setLoading] = useState(true);
-    
-    useEffect(() => {
-        setLoading(true);
-        if (!loadingUsuario && usuario) {
-            async function fetchNotificaciones() {
-                try {
-                    const notif = await getNotificacionByUser(usuario.id || usuario.usuario);
-                    setNotificaciones(notif.result || notif || []);
-                }
-                catch(error){
-                    console.error("Error al obtener notificaciones: ", error);
-                    ErrorPopUp(error?.response?.data?.error || "Error al obtener notificaciones");
-                }
-                finally {
-                    setLoading(false);
-                }
-            }
-            fetchNotificaciones();
-        }
-    }, [loadingUsuario, usuario]);
 
     const hideModal = () => {
         setModalShow(false);
         setCartasModal([]);
-        setNotificacionModal();
+        setNotificacionModal(null);
     };
 
     const formatearFecha = (fecha) => {
@@ -58,6 +36,8 @@ function Notificaciones() {
         if (notif.armas && Array.isArray(notif.armas)) cartas.push(...notif.armas);
         if (notif.armaduras && Array.isArray(notif.armaduras)) cartas.push(...notif.armaduras);
         if (notif.pasivas && Array.isArray(notif.pasivas)) cartas.push(...notif.pasivas);
+        if (notif.comidas && Array.isArray(notif.comidas)) cartas.push(...notif.comidas);
+        if (notif.objetos && Array.isArray(notif.objetos)) cartas.push(...notif.objetos);
         return cartas;
     };
 
@@ -74,20 +54,12 @@ function Notificaciones() {
 
     const handleClickVista = async (notif) => {
         try {
-            await updateNotificacion(notif.id, {
-                vista: !notif.vista
-            });
-
-            notif.vista = !notif.vista;
-            setNotificaciones([...notificaciones]);
+            await toggleVista(notif.id, !notif.vista);
+        } catch(error) {
+            console.error("Error al actualizar notificación: ", error);
+            ErrorPopUp(error?.response?.data?.error || "Error al actualizar notificación");
         }
-        catch(error){
-            console.error("Error al actualizar notificacion: ", error);
-            ErrorPopUp(error?.response?.data?.error || "Error al actualizar notificacion");
-        }
-    }
-
-
+    };
 
     const mostrarNotificacion = (notif) => {
         return (
@@ -130,8 +102,7 @@ function Notificaciones() {
                 <div className='d-flex align-items-center justify-content-between'>
                     <p className='m-0'>{titulo}</p>
                     <div className='d-flex align-items-center'>
-                        {notif.tipo.includes('Selección') ?  <></>
-                            :
+                        {!notif.tipo.includes('Selección') && (
                             <button
                                 type="button"
                                 className={`btn-toggle-vista ${notif.vista ? 'vista' : 'no-vista'}`}
@@ -144,7 +115,7 @@ function Notificaciones() {
                             >
                                 {notif.vista ? <IconEye size={22} /> : <IconEyeOff size={22} />}
                             </button>
-                        }
+                        )}
                     </div>
                 </div>
                 <Container className="cartas-notificacion d-flex flex-wrap align-items-center" onClick={() => handleClick(notif)}>
@@ -168,19 +139,21 @@ function Notificaciones() {
         );
     };
 
+    const isLoading = loadingUsuario || loadingNotif;
+
     return (
         <div className="notificaciones d-flex flex-column align-items-center">
-            {(loading || loadingUsuario) && <LoadingSpiner/>}
-            {!loading && notificaciones && notificaciones.length > 0 && (
+            {isLoading && <LoadingSpiner/>}
+            {!isLoading && notificaciones && notificaciones.length > 0 && (
                 notificaciones.map((notif) => {
                     const cartas = getCartasFromNotif(notif);
                     return cartas.length > 0 ? mostrarNotificacionConCartas(notif) : mostrarNotificacion(notif);
                 })
             )}
-            {!loading && notificaciones && notificaciones.length === 0 && (
+            {!isLoading && notificaciones && notificaciones.length === 0 && (
                 <p className="text-muted mt-4">No tienes notificaciones pendientes.</p>
             )}
-            {!loading && !loadingUsuario && (
+            {!isLoading && (
                 <ModalSeleccionarCartaNotif
                     show={modalShow}
                     onHide={hideModal}

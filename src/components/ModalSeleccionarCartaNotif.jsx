@@ -1,16 +1,15 @@
 import './ModalSeleccionarCartaNotif.css';
 import Modal from 'react-bootstrap/Modal';
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { updateNotificacion } from '../services/NotificacionService.js';
 import { createInventario } from '../services/InventarioService.js';
 import { getPersonajes } from '../services/PersonajeService.js';
 import { UsuarioContext } from './context/usuarioContext';
+import { NotificacionContext } from './context/notificacionContext';
 import Swal from 'sweetalert2';
 
 function ModalSeleccionarCartaNotif(props) {
-    const navigate = useNavigate();
     const { usuario } = useContext(UsuarioContext);
+    const { marcarComoVista } = useContext(NotificacionContext);
     const [cartaSeleccionada, setCartaSeleccionada] = useState();
 
     useEffect(() => {
@@ -108,11 +107,9 @@ function ModalSeleccionarCartaNotif(props) {
             // 3. Crear registro en Inventario
             await createInventario(inventarioData);
 
-            // 4. Actualizar la notificación como vista
+            // 4. Actualizar la notificación como vista en el contexto global
             if (props.notificacion?.id) {
-                await updateNotificacion(props.notificacion.id, {
-                    vista: true
-                });
+                await marcarComoVista(props.notificacion.id);
             }
 
             Swal.fire({
@@ -125,7 +122,6 @@ function ModalSeleccionarCartaNotif(props) {
             }).then(() => {
                 props.onHide();
                 setCartaSeleccionada(null);
-                navigate(0);
             });
         } catch (error) {
             console.error('Error al procesar la notificación e inventario', error);

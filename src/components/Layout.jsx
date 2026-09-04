@@ -1,34 +1,21 @@
 import './Layout.css'
 import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import { Outlet } from 'react-router-dom'
-import { useEffect, useState } from "react";
-import {
-    getFirestore,
-    getDocs,
-    collection,
-    where,
-    query,
-} from "firebase/firestore";
-import { useContext } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { useEffect, useState, useContext } from "react";
 import { UsuarioContext } from './context/usuarioContext';
-import { useNavigate } from 'react-router-dom';
-import { use } from 'react';
-import useAsync from '../hooks/useAsync';
-import { getNotificacionByUser } from '../services/NotificacionService.js';
+import { NotificacionContext } from './context/notificacionContext';
 import { logoutUsuario } from '../services/UsuarioService.js';
 import ErrorPopUp from './Popups/Error.jsx';
 import { TIPOS_CARTAS } from '../utils/constants.js';
 
 function Layout() {
-  const [tiposCartas, setTiposCartas] = useState(TIPOS_CARTAS);
+  const [tiposCartas] = useState(TIPOS_CARTAS);
   const { usuario, setUsuario, loading: loadingUsuario } = useContext(UsuarioContext);
-  const [cantNotif, setCantNotif] = useState(0);
+  const { cantNotif } = useContext(NotificacionContext);
   const navigate = useNavigate();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    console.log("Usuario en Layout:", usuario);
     if (!loadingUsuario && (!usuario || usuario === undefined)) {
       navigate('/Login');
     }
@@ -41,41 +28,17 @@ function Layout() {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
-
-  useEffect(() => {
-    if (!loadingUsuario && (!usuario || usuario === undefined)) {
-      navigate('/Login');
-    }
-    
-    if (!loadingUsuario && usuario) {
-      async function fetchNotificaciones() {
-        try {
-          const notif = await getNotificacionByUser(usuario.usuario);
-          setCantNotif(notif.result.filter(notif => !notif.vista).length);
-        } catch (error) {
-          console.error("Error al obtener notificaciones: ", error);
-          ErrorPopUp(error.response.data.error || "Error al obtener notificaciones");
-        }
-      }
-
-      fetchNotificaciones();
-    } else {
-      setCantNotif(0);
-    }
-  }, [loadingUsuario, usuario]);
+  }, [loadingUsuario, usuario, navigate]);
 
   const handleLogout = async () => {
-    try{
+    try {
       await logoutUsuario();
-      navigate('/Login'); // Redirigir a la página de login
-      setUsuario(null); // Limpiar el contexto del usuario
-    }
-    catch(error){
+      navigate('/Login');
+      setUsuario(null);
+    } catch(error) {
       console.error("Error al cerrar sesión: ", error);
-      ErrorPopUp(error.response.data.error || "Error al cerrar sesión");
+      ErrorPopUp(error.response?.data?.error || "Error al cerrar sesión");
     }
-    
   };
 
   return (
@@ -91,7 +54,7 @@ function Layout() {
                           {cantNotif}
                         </span>
                       )}
-                    <img src='/src/assets/icon-notificacion.png' className='icon-notif'/>
+                    <img src='/src/assets/icon-notificacion.png' className='icon-notif' alt="Notificaciones"/>
                   </Nav.Link>
                 )}
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -128,10 +91,10 @@ function Layout() {
                           {cantNotif}
                         </span>
                       )}
-                    <img src='/src/assets/icon-notificacion.png' className='icon-notif'/>
+                    <img src='/src/assets/icon-notificacion.png' className='icon-notif' alt="Notificaciones"/>
                   </Nav.Link>
                 )}
-                <NavDropdown title={`${(usuario == undefined ? "" : usuario.usuario)}`} id="basic-nav-dropdown" className='usuario d-flex align-items-center'>
+                <NavDropdown title={`${(usuario === undefined || !usuario ? "" : usuario.usuario)}`} id="basic-nav-dropdown" className='usuario d-flex align-items-center'>
                   <NavDropdown.Item onClick={handleLogout}>Cerrar sesión</NavDropdown.Item>
                 </NavDropdown>
               </Nav>
@@ -140,7 +103,7 @@ function Layout() {
       </Navbar>
       <Outlet /> 
     </>
-  )
+  );
 }
 
-export default Layout
+export default Layout;
